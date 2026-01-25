@@ -1,0 +1,37 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
+  <div class="w-full max-w-md bg-white shadow-lg rounded-2xl p-8 border border-slate-100">
+
+    <!-- Header -->
+    <div class="mb-6 text-center">
+      <h1 class="text-2xl font-semibold text-slate-900">
+        Plataforma de Créditos
+      </h1>
+      <p class="mt-2 text-sm text-slate-500">
+        Gestiona solicitudes y aprobaciones de crédito de forma segura.
+      </p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex mb-6 border-b border-slate-200 text-sm font-medium">
+      <a
+        routerLink="/auth/login"
+        routerLinkActive="text-brand-600 border-b-2 border-brand-600"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex-1 text-center py-2 cursor-pointer text-slate-500 hover:text-slate-700 border-b-2 border-transparent transition"
+      >
+        Iniciar sesión
+      </a>
+      <a
+        routerLink="/auth/register"
+        routerLinkActive="text-brand-600 border-b-2 border-brand-600"
+        class="flex-1 text-center py-2 cursor-pointer text-slate-500 hover:text-slate-700 border-b-2 border-transparent transition"
+      >
+        Crear cuenta
+      </a>
+    </div>
+
+    <!-- Contenido: login / register -->
+    <router-outlet></router-outlet>
+
+  </div>
+</div>

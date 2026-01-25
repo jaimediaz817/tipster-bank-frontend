@@ -1,0 +1,119 @@
+<div class="space-y-6">
+  <!-- Encabezado -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h2 class="text-xl font-bold text-slate-800">
+        Reporte Detallado de Cartera
+      </h2>
+      <p class="text-sm text-slate-500 mt-1">
+        Muestra un listado completo de todas las solicitudes de crédito con su
+        información detallada.
+      </p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button
+        (click)="exportToExcel()"
+        [disabled]="isLoading() || reportData().length === 0"
+        class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+      >
+        <span class="material-icons text-base">file_download</span>
+        <span>Excel</span>
+      </button>
+      <button
+        (click)="exportToPdf()"
+        [disabled]="isLoading() || reportData().length === 0"
+        class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-rose-700 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+      >
+        <span class="material-icons text-base">picture_as_pdf</span>
+        <span>PDF</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Estado de Carga -->
+  @if (isLoading()) {
+  <div
+    class="p-8 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 text-center text-slate-500"
+  >
+    <div class="flex justify-center items-center gap-2">
+      <span class="material-icons animate-spin">sync</span>
+      <span>Cargando reporte...</span>
+    </div>
+  </div>
+  }
+
+  <!-- Estado de Error -->
+  @if (errorMessage() && !isLoading()) {
+  <div
+    class="p-8 border-2 border-dashed border-rose-200 rounded-xl bg-rose-50 text-center text-rose-700"
+  >
+    <div class="flex justify-center items-center gap-2">
+      <span class="material-icons">error_outline</span>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  </div>
+  }
+
+  <!-- Contenido del Reporte -->
+  @if (!isLoading() && !errorMessage()) { @if (reportData().length > 0) {
+  <div class="overflow-x-auto bg-white border border-slate-200 rounded-xl">
+    <table class="min-w-full divide-y divide-slate-200 text-sm">
+      <thead class="bg-slate-50">
+        <tr>
+          <th scope="col" class="px-4 py-2 text-left font-semibold text-slate-600">ID</th>
+          <th scope="col" class="px-4 py-2 text-left font-semibold text-slate-600">Cliente</th>
+          <th scope="col" class="px-4 py-2 text-left font-semibold text-slate-600">Producto</th>
+          <th scope="col" class="px-4 py-2 text-right font-semibold text-slate-600">Monto</th>
+          <th scope="col" class="px-4 py-2 text-center font-semibold text-slate-600">Plazo</th>
+          <th scope="col" class="px-4 py-2 text-center font-semibold text-slate-600">Estado</th>
+          <th scope="col" class="px-4 py-2 text-left font-semibold text-slate-600">Fecha Creación</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        @for (row of reportData(); track row.applicationId) {
+        <tr class="hover:bg-slate-50">
+          <td class="px-4 py-2 font-mono text-xs text-slate-500">#{{ row.applicationId }}</td>
+          <td class="px-4 py-2 whitespace-nowrap">
+            <div class="font-medium text-slate-800">{{ row.clientFullName }}</div>
+            <div class="text-slate-500">{{ row.clientEmail }}</div>
+          </td>
+          <td class="px-4 py-2 whitespace-nowrap text-slate-700">{{ row.productName }}</td>
+          <td class="px-4 py-2 whitespace-nowrap text-right font-medium text-slate-800">
+            {{ row.amount | currency : row.currencyCode : "symbol" : "1.0-0" }}
+          </td>
+          <td class="px-4 py-2 whitespace-nowrap text-center text-slate-700">{{ row.termMonths }} meses</td>
+          <td class="px-4 py-2 whitespace-nowrap text-center">
+            <span
+              class="px-2 py-1 text-xs font-semibold rounded-full"
+              [ngClass]="{
+                'bg-yellow-100 text-yellow-800': row.status === 'EN_REVISION',
+                'bg-emerald-100 text-emerald-800': row.status === 'APROBADO',
+                'bg-rose-100 text-rose-800': row.status === 'RECHAZADO'
+              }"
+            >
+              {{ row.status }}
+            </span>
+          </td>
+          <td class="px-4 py-2 whitespace-nowrap text-slate-500">
+            {{ row.createdAt | date : "dd/MM/yyyy 'a las' HH:mm" }}
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  } @else {
+  <!-- Estado Vacío -->
+  <div
+    class="p-8 border-2 border-dashed border-slate-200 rounded-xl bg-white text-center text-slate-500"
+  >
+    <div class="flex flex-col items-center gap-2">
+      <span class="material-icons text-4xl text-slate-400">summarize</span>
+      <span class="font-medium">No hay datos para mostrar</span>
+      <p class="text-xs">
+        El reporte no generó resultados con los parámetros actuales.
+      </p>
+    </div>
+  </div>
+  } }
+</div>

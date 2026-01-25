@@ -1,0 +1,24 @@
+<div
+  class="fixed top-4 right-4 z-50 flex flex-col gap-2 w-full max-w-sm"
+  aria-live="assertive"
+>
+  @for (toast of toasts(); track toast.id) {
+    <div
+      class="flex items-start gap-3 rounded-xl border px-3 py-2 shadow-sm transition-all"
+      [ngClass]="styleFor(toast.type)"
+    >
+      <div class="flex-1 text-sm">
+        {{ toast.message }}
+      </div>
+
+      <button
+        type="button"
+        class="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full border border-current/30 text-xs"
+        (click)="onClose(toast.id)"
+        aria-label="Cerrar notificación"
+      >
+        ✕
+      </button>
+    </div>
+  }
+</div>

@@ -1,0 +1,12 @@
+<div class="bg-white border border-slate-200 rounded-xl p-4">
+  <h3 class="text-sm font-semibold text-slate-800 mb-2">
+    Monto total por estado
+  </h3>
+  <div class="h-72">
+    <canvas baseChart
+      [data]="barChartData"
+      [options]="barChartOptions"
+      [type]="barChartType">
+    </canvas>
+  </div>
+</div>

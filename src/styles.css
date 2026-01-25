@@ -1,1 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles */
+@import "tailwindcss";
+
+/* Aquí puedes poner estilos globales tuyos si quieres */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button,
+a,
+[role="button"] {
+  cursor: pointer;
+}

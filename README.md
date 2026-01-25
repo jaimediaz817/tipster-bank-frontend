@@ -57,3 +57,18 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+
+## INSTALAR GRAFICOS:
+npm install chart.js ng2-charts
+
+status-amount-bar-chart
+ng generate component features/shared/status-donut-chart --standalone --flat=false
+ng generate component features/shared/status-amount-bar-chart --standalone --flat=false
+
+
+## INSTALAR PAQUETES PARA EXCEL Y PDF:
+npm install jspdf jspdf-autotable xlsx
+npm install @types/jspdf -D
+

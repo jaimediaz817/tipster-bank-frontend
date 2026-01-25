@@ -1,0 +1,329 @@
+<div class="max-w-6xl mx-auto space-y-4">
+
+  <!-- Encabezado -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div>
+      <h2 class="text-lg font-semibold text-slate-900">
+        Bandeja de solicitudes (Analista)
+      </h2>
+      <p class="text-sm text-slate-500">
+        Revisa las solicitudes de crédito, busca por cliente y actualiza su estado.
+      </p>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    @if (summary()) {
+      <div class="rounded-xl border border-slate-200 bg-white p-3">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+          En revisión
+        </p>
+        <p class="mt-1 text-2xl font-semibold text-slate-900">
+          {{ summary()!.enRevisionCount }}
+        </p>
+        <p class="mt-1 text-xs text-slate-500">
+          Monto total:
+          <span class="font-medium">
+            {{ summary()!.totalEnRevisionAmount | number:'1.0-0' }}
+          </span>
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 bg-white p-3">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+          Aprobadas
+        </p>
+        <p class="mt-1 text-2xl font-semibold text-emerald-700">
+          {{ summary()!.aprobadasCount }}
+        </p>
+        <p class="mt-1 text-xs text-slate-500">
+          Monto total:
+          <span class="font-medium">
+            {{ summary()!.totalAprobadasAmount | number:'1.0-0' }}
+          </span>
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 bg-white p-3">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">
+          Rechazadas
+        </p>
+        <p class="mt-1 text-2xl font-semibold text-rose-700">
+          {{ summary()!.rechazadasCount }}
+        </p>
+        <p class="mt-1 text-xs text-slate-500">
+          Decisiones ya finalizadas.
+        </p>
+      </div>
+    } @else {
+      <div class="col-span-3 h-20 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 animate-pulse"></div>
+    }
+  </div>
+
+  <!-- Filtros + búsqueda -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mt-2">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-xs font-medium text-slate-500 mr-1">Filtrar por estado:</span>
+
+      <button type="button" (click)="setFilter('ALL')" [ngClass]="filterClasses('ALL')">
+        Todas
+      </button>
+
+      <button type="button" (click)="setFilter('EN_REVISION')" [ngClass]="filterClasses('EN_REVISION')">
+        En revisión
+      </button>
+
+      <button type="button" (click)="setFilter('APROBADO')" [ngClass]="filterClasses('APROBADO')">
+        Aprobadas
+      </button>
+
+      <button type="button" (click)="setFilter('RECHAZADO')" [ngClass]="filterClasses('RECHAZADO')">
+        Rechazadas
+      </button>
+    </div>
+
+    <!-- Búsqueda por cliente -->
+    <div class="flex items-center gap-2">
+      <div class="relative">
+        <input
+          type="text"
+          placeholder="Buscar por cliente..."
+          class="w-56 pl-8 pr-8 py-1.5 rounded-md border border-slate-300 text-sm
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          [ngModel]="clientQuery()"
+          (ngModelChange)="clientQuery.set($event)"
+        />
+        <span class="absolute left-2 top-1.5 text-slate-400 text-sm">🔍</span>
+        @if (clientQuery()) {
+          <button
+            type="button"
+            class="absolute right-2 top-1.5 text-slate-400 hover:text-slate-600 text-xs"
+            (click)="clearSearch()"
+          >
+            ✕
+          </button>
+        }
+      </div>
+      <button
+        type="button"
+        (click)="onSearch()"
+        class="px-3 py-1.5 rounded-md text-sm font-medium bg-indigo-600 text-white
+               hover:bg-indigo-500"
+      >
+        Buscar
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensaje de error -->
+  @if (errorMessage()) {
+    <div class="rounded-md bg-rose-50 border border-rose-200 px-3 py-2 text-sm text-rose-700">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Loader -->
+  @if (isLoading() && !errorMessage()) {
+    <div class="mt-4 rounded-xl border border-slate-200 bg-white p-6 flex items-center gap-3 text-sm text-slate-500">
+      <span
+        class="h-4 w-4 border-2 border-slate-300 border-t-transparent rounded-full animate-spin"
+      ></span>
+      Cargando solicitudes...
+    </div>
+  }
+
+  <!-- Estado vacío -->
+  @if (!isLoading() && !errorMessage() && (!creditsPage() || creditsPage()!.content.length === 0)) {
+    <div class="mt-4 rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
+      No hay solicitudes para el filtro y criterio de búsqueda actual.
+    </div>
+  }
+
+  <!-- Tabla + paginación -->
+  @if (!isLoading() && !errorMessage() && creditsPage() && creditsPage()!.content.length > 0) {
+    <div class="mt-4 rounded-xl border border-slate-200 bg-white overflow-hidden">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50 border-b border-slate-200">
+          <tr>
+            <th class="px-4 py-2 text-left font-medium text-slate-600">Fecha</th>
+            <th class="px-4 py-2 text-left font-medium text-slate-600">Cliente</th>
+            <th class="px-4 py-2 text-left font-medium text-slate-600">Monto</th>
+            <th class="px-4 py-2 text-left font-medium text-slate-600">Producto</th>
+            <th class="px-4 py-2 text-left font-medium text-slate-600">Estado</th>
+            <th class="px-4 py-2 text-right font-medium text-slate-600">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (credit of creditsPage()!.content; track credit.id) {
+            <tr class="hover:bg-slate-50/60">
+              <td class="px-4 py-2 text-slate-700">
+                {{ credit.createdAt | date:'shortDate' }}
+              </td>
+              <td class="px-4 py-2 text-slate-800">
+                {{ credit.clientFullName ?? 'Cliente N/A' }}
+              </td>
+              <td class="px-4 py-2 text-slate-800">
+                {{ credit.amount | number:'1.0-0' }}
+              </td>
+              <td class="px-4 py-2 text-slate-700">
+                {{ credit.creditProductName }}
+              </td>
+              <td class="px-4 py-2">
+                <span
+                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                  [ngClass]="statusClasses(credit.status)"
+                >
+                  {{ statusLabel(credit.status) }}
+                </span>
+              </td>
+              <td class="px-4 py-2 text-right">
+                <button
+                  type="button"
+                  class="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium
+                         text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200"
+                  (click)="openModal(credit)"
+                >
+                  Cambiar estado
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Paginación -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 py-3 border-t border-slate-200 text-xs text-slate-500">
+        <div>
+          @if (creditsPage()) {
+            <span>
+              Página
+              <span class="font-medium">
+                {{ creditsPage()!.number + 1 }}
+              </span>
+              de
+              <span class="font-medium">
+                {{ creditsPage()!.totalPages }}
+              </span>
+              · Total:
+              <span class="font-medium">
+                {{ creditsPage()!.totalElements }}
+              </span>
+              solicitudes
+            </span>
+          }
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            class="px-2 py-1 rounded-md border border-slate-300 text-xs
+                   disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="!canGoPrev()"
+            (click)="goPrev()"
+          >
+            ← Anterior
+          </button>
+          <button
+            type="button"
+            class="px-2 py-1 rounded-md border border-slate-300 text-xs
+                   disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="!canGoNext()"
+            (click)="goNext()"
+          >
+            Siguiente →
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal cambio de estado (igual que antes) -->
+  @if (isModalOpen() && selectedCredit()) {
+    <div class="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/40">
+      <div class="bg-white rounded-xl shadow-xl max-w-lg w-full mx-4 p-4 space-y-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-base font-semibold text-slate-900">
+              Cambiar estado de solicitud
+            </h3>
+            <p class="text-xs text-slate-500">
+              Cliente: {{ selectedCredit()?.clientFullName ?? 'N/A' }} —
+              Monto: {{ selectedCredit()?.amount | number:'1.0-0' }}
+            </p>
+          </div>
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="text-slate-400 hover:text-slate-600 text-lg leading-none"
+          >
+            ✕
+          </button>
+        </div>
+
+        <form [formGroup]="statusForm" (ngSubmit)="onSubmitStatus()" class="space-y-3">
+          <div class="space-y-1">
+            <label class="block text-sm font-medium text-slate-700">
+              Nuevo estado
+            </label>
+            <select
+              formControlName="newStatus"
+              class="w-full px-3 py-2 rounded-md border text-sm outline-none
+                     border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+            >
+              <option value="EN_REVISION">En revisión</option>
+              <option value="APROBADO">Aprobado</option>
+              <option value="RECHAZADO">Rechazado</option>
+            </select>
+          </div>
+
+          <div class="space-y-1">
+            <label class="block text-sm font-medium text-slate-700">
+              Comentarios del analista
+            </label>
+            <textarea
+              rows="3"
+              formControlName="analystComments"
+              class="w-full px-3 py-2 rounded-md border text-sm outline-none
+                     border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Justifica brevemente la decisión tomada..."
+            ></textarea>
+            @if (statusForm.get('analystComments')?.touched && statusForm.get('analystComments')?.invalid) {
+              <p class="text-xs text-rose-600 mt-1">
+                Se requiere un comentario mínimo de 5 caracteres.
+              </p>
+            }
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2">
+            <button
+              type="button"
+              (click)="closeModal()"
+              class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 border border-slate-300 hover:bg-slate-50"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              [disabled]="statusForm.invalid || isLoading()"
+              class="px-4 py-2 rounded-md text-sm font-medium
+                     text-white bg-indigo-600 hover:bg-indigo-500
+                     disabled:opacity-60 disabled:cursor-not-allowed
+                     inline-flex items-center gap-2"
+            >
+              @if (!isLoading()) {
+                <span>Guardar cambios</span>
+              } @else {
+                <span class="flex items-center gap-2">
+                  <span
+                    class="h-4 w-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin"
+                  ></span>
+                  Guardando...
+                </span>
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
