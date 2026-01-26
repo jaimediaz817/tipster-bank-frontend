@@ -1,60 +1,66 @@
-<div class="space-y-4">
-  <div>
-    <h2 class="text-xl font-semibold text-slate-800">Resumen General</h2>
-    <p class="text-sm text-slate-500">
-      Vista consolidada del estado de las solicitudes de crédito.
-    </p>
+<!-- 1. Contenedor que centra y limita el ancho -->
+<div class="page-container">
+  <!-- 2. Contenedor con fondo blanco y estilos de tarjeta -->
+  <div class="content-wrapper">
+    <div class="space-y-4">
+      <div>
+        <h2 class="text-xl font-semibold text-slate-800">Resumen General</h2>
+        <p class="text-sm text-slate-500">
+          Vista consolidada del estado de las solicitudes de crédito.
+        </p>
 
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="bg-white rounded-xl border border-slate-200 p-4">
-        <p class="text-xs text-slate-500">Total solicitudes</p>
-        <p class="text-2xl font-semibold text-slate-900">
-          {{ summary()?.totalCount ?? 0 }}
-        </p>
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white rounded-xl border border-slate-200 p-4">
+            <p class="text-xs text-slate-500">Total solicitudes</p>
+            <p class="text-2xl font-semibold text-slate-900">
+              {{ summary()?.totalCount ?? 0 }}
+            </p>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-200 p-4">
+            <p class="text-xs text-slate-500">En revisión</p>
+            <p class="text-2xl font-semibold text-slate-900">
+              {{ getStatusCount('EN_REVISION') }}
+            </p>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-200 p-4">
+            <p class="text-xs text-slate-500">Aprobadas</p>
+            <p class="text-2xl font-semibold text-slate-900">
+              {{ getStatusCount('APROBADO') }}
+            </p>
+          </div>
+        </section>
       </div>
-      <div class="bg-white rounded-xl border border-slate-200 p-4">
-        <p class="text-xs text-slate-500">En revisión</p>
-        <p class="text-2xl font-semibold text-slate-900">
-          {{ getStatusCount('EN_REVISION') }}
-        </p>
-      </div>
-      <div class="bg-white rounded-xl border border-slate-200 p-4">
-        <p class="text-xs text-slate-500">Aprobadas</p>
-        <p class="text-2xl font-semibold text-slate-900">
-          {{ getStatusCount('APROBADO') }}
-        </p>
-      </div>
-</section>
 
+      @if (isLoading()) {
+        <!-- Skeleton Loader para los gráficos -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+          <div class="h-80 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 animate-pulse p-4 space-y-3">
+            <div class="h-4 bg-slate-200 rounded w-1/3"></div>
+            <div class="h-64 bg-slate-200 rounded-full w-64 mx-auto"></div>
+          </div>
+          <div class="h-80 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 animate-pulse p-4 space-y-3">
+            <div class="h-4 bg-slate-200 rounded w-1/3"></div>
+            <div class="h-64 bg-slate-200 rounded"></div>
+          </div>
+        </div>
+      } @else if (summary()) {
+        <!-- Contenedor de los gráficos -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+          <app-status-donut-chart
+            [data]="summary()?.byStatus ?? []">
+          </app-status-donut-chart>
+
+          <app-status-amount-bar-chart
+            [data]="summary()?.byStatus ?? []">
+          </app-status-amount-bar-chart>
+        </div>
+      } @else {
+        <!-- Estado de error o vacío -->
+        <div class="p-8 border-2 border-dashed border-slate-300 rounded-xl text-center text-slate-500">
+          <p>No hay datos de resumen disponibles para mostrar.</p>
+        </div>
+      }
+    </div>
   </div>
-
-  @if (isLoading()) {
-    <!-- Skeleton Loader para los gráficos -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-      <div class="h-80 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 animate-pulse p-4 space-y-3">
-        <div class="h-4 bg-slate-200 rounded w-1/3"></div>
-        <div class="h-64 bg-slate-200 rounded-full w-64 mx-auto"></div>
-      </div>
-      <div class="h-80 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 animate-pulse p-4 space-y-3">
-        <div class="h-4 bg-slate-200 rounded w-1/3"></div>
-        <div class="h-64 bg-slate-200 rounded"></div>
-      </div>
-    </div>
-  } @else if (summary()) {
-    <!-- Contenedor de los gráficos -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-      <app-status-donut-chart
-        [data]="summary()?.byStatus ?? []">
-      </app-status-donut-chart>
-
-      <app-status-amount-bar-chart
-        [data]="summary()?.byStatus ?? []">
-      </app-status-amount-bar-chart>
-    </div>
-  } @else {
-    <!-- Estado de error o vacío -->
-    <div class="p-8 border-2 border-dashed border-slate-300 rounded-xl text-center text-slate-500">
-      <p>No hay datos de resumen disponibles para mostrar.</p>
-    </div>
-  }
 </div>
+

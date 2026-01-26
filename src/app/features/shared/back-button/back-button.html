@@ -1,0 +1,10 @@
+<button
+  class="back-btn"
+  type="button"
+  [disabled]="disabled"
+  (click)="onClick()"
+  aria-label="Volver a la página anterior"
+>
+  <span class="icon" aria-hidden="true">←</span>
+  <span class="text">{{ label }}</span>
+</button>

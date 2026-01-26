@@ -9,7 +9,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class PaymentsService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api/payments';
+  private readonly baseUrl = 'http://localhost:8080/api/lending/payments';
 
   simulate(request: PaymentSimulationRequest): Observable<PaymentInstallment[]> {
     return this.http.post<PaymentInstallment[]>(

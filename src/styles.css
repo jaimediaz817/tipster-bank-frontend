@@ -11,3 +11,49 @@ a,
 [role="button"] {
   cursor: pointer;
 }
+
+/* Contenedor principal para el contenido de las páginas */
+.page-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6;
+}
+
+/* Contenedor con fondo, borde y sombra para un efecto "card" */
+.content-wrapper {
+  @apply p-6;
+  border: 1px solid #e5e7eb; /* borde gris muy tenue */
+  background-color: #f5f5f5; /* fondo gris muy claro */
+}
+
+.logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(90deg, #f43f5e 0%, #fb7185 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px 0 rgba(244, 63, 94, 0.12);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+.logout-btn:hover, .logout-btn:focus {
+  background: linear-gradient(90deg, #be123c 0%, #fda4af 100%);
+  box-shadow: 0 4px 16px 0 rgba(244, 63, 94, 0.18);
+  transform: translateY(-1px) scale(1.03);
+}
+.logout-btn:active {
+  background: linear-gradient(90deg, #f43f5e 0%, #fb7185 100%);
+  box-shadow: 0 1px 4px 0 rgba(244, 63, 94, 0.10);
+  transform: scale(0.98);
+}
+.icon {
+  display: flex;
+  align-items: center;
+}
+.text {
+  font-weight: 600;
+}

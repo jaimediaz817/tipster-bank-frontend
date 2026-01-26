@@ -5,11 +5,12 @@ import { DetailedPortfolioReport } from '../../../core/models/reports.models';
 import { ExportService } from '../../../core/services/export.service'; // <--- Lo usamos aquí también
 import { ToastStore } from '../../../core/state/toast.store';
 import { ReportsService } from '../../../core/services/reports';
+import { BackButton } from '../../shared/back-button/back-button';
 
 @Component({
   selector: 'app-detailed-portfolio-report-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BackButton],
   templateUrl: './detailed-portfolio-report-page.html',
 })
 export class DetailedPortfolioReportPage implements OnInit {

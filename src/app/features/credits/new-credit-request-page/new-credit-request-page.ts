@@ -12,6 +12,7 @@ import { CatalogsService } from '../../../core/services/catalogs.service';
 import { CreditsService } from '../../../core/services/credits.service';
 import { CreateCreditRequest } from '../../../core/models/credit.models';
 import { ToastStore } from '../../../core/state/toast.store';
+import { BackButton } from '../../shared/back-button/back-button';
 // import { CatalogsService } from '../../core/services/catalogs.service';
 // import { CreditsService } from '../../core/services/credits.service';
 // import { CreditProduct, Currency, IncomeSource } from '../../core/models/catalog.models';
@@ -20,7 +21,7 @@ import { ToastStore } from '../../../core/state/toast.store';
 @Component({
   selector: 'app-new-credit-request-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, BackButton],
   templateUrl: './new-credit-request-page.html',
   styleUrls: ['./new-credit-request-page.css'],
 })

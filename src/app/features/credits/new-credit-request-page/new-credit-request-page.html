@@ -1,228 +1,237 @@
-<div class="max-w-3xl mx-auto space-y-4">
+<!-- 1. Contenedor que centra y limita el ancho -->
+<div class="page-container">
+    <!-- 2. Contenedor con fondo blanco y estilos de tarjeta -->
+    <div class="content-wrapper">
+      <div class="max-w-3xl mx-auto space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <div>
+                <h2 class="text-xl font-semibold text-slate-800">Nueva solicitud de crédito</h2>
+                <p class="text-sm text-slate-500">
+                    Completa la información para crear una nueva solicitud.
+                </p>
+            </div>
+            <div class="flex justify-end mt-2 md:mt-0">
+                <app-back-button label="Volver" mode="history"></app-back-button>
+            </div>
+        </div> 
 
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-    <div>
-      <h2 class="text-lg font-semibold text-slate-900">
-        Nueva solicitud de crédito
-      </h2>
-      <p class="text-sm text-slate-500">
-        Completa la información para crear una nueva solicitud.
-      </p>
-    </div>
-  </div>
 
-  <!-- Mensajes globales -->
-  @if (successMessage()) {
-    <div class="rounded-md bg-emerald-50 border border-emerald-200 px-3 py-2 text-sm text-emerald-700">
-      {{ successMessage() }}
-    </div>
-  }
+        <!-- Mensajes globales -->
+        @if (successMessage()) {
+          <div class="rounded-md bg-emerald-50 border border-emerald-200 px-3 py-2 text-sm text-emerald-700">
+            {{ successMessage() }}
+          </div>
+        }
 
-  @if (errorMessage()) {
-    <div class="rounded-md bg-rose-50 border border-rose-200 px-3 py-2 text-sm text-rose-700">
-      {{ errorMessage() }}
-    </div>
-  }
+        @if (errorMessage()) {
+          <div class="rounded-md bg-rose-50 border border-rose-200 px-3 py-2 text-sm text-rose-700">
+            {{ errorMessage() }}
+          </div>
+        }
 
-  <!-- Loader catálogos -->
-  @if (isLoadingCatalogs()) {
-    <div class="rounded-xl border border-slate-200 bg-white p-4 flex items-center gap-3 text-sm text-slate-500">
-      <span
-        class="h-4 w-4 border-2 border-slate-300 border-t-transparent rounded-full animate-spin"
-      ></span>
-      Cargando catálogos de productos, monedas y fuentes de ingresos...
-    </div>
-  }
+        <!-- Loader catálogos -->
+        @if (isLoadingCatalogs()) {
+          <div class="rounded-xl border border-slate-200 bg-white p-4 flex items-center gap-3 text-sm text-slate-500">
+            <span
+              class="h-4 w-4 border-2 border-slate-300 border-t-transparent rounded-full animate-spin"
+            ></span>
+            Cargando catálogos de productos, monedas y fuentes de ingresos...
+          </div>
+        }
 
-  <!-- Formulario -->
-  @if (!isLoadingCatalogs()) {
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4 bg-white border border-slate-200 rounded-xl p-4">
+        <!-- Formulario -->
+        @if (!isLoadingCatalogs()) {
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4 bg-white border border-slate-200 rounded-xl p-4">
 
-      <!-- Primera fila: monto y plazo -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="space-y-1">
-          <label for="amount" class="block text-sm font-medium text-slate-700">
-            Monto solicitado
-          </label>
-          <input
-            id="amount"
-            type="number"
-            formControlName="amount"
-            class="w-full px-3 py-2 rounded-md border text-sm outline-none
-                   border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            placeholder="Ej: 10000000"
-          />
-          @if (amount?.touched && amount?.invalid) {
-            <p class="text-xs text-rose-600 mt-1">
-              @if (amount?.errors?.['required']) {
-                El monto es obligatorio.
-              } @else if (amount?.errors?.['min']) {
-                El monto mínimo permitido es 1.000.000.
+            <!-- Primera fila: monto y plazo -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label for="amount" class="block text-sm font-medium text-slate-700">
+                  Monto solicitado
+                </label>
+                <input
+                  id="amount"
+                  type="number"
+                  formControlName="amount"
+                  class="w-full px-3 py-2 rounded-md border text-sm outline-none
+                        border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Ej: 10000000"
+                />
+                @if (amount?.touched && amount?.invalid) {
+                  <p class="text-xs text-rose-600 mt-1">
+                    @if (amount?.errors?.['required']) {
+                      El monto es obligatorio.
+                    } @else if (amount?.errors?.['min']) {
+                      El monto mínimo permitido es 1.000.000.
+                    }
+                  </p>
+                }
+              </div>
+
+              <div class="space-y-1">
+                <label for="termMonths" class="block text-sm font-medium text-slate-700">
+                  Plazo (meses)
+                </label>
+                <input
+                  id="termMonths"
+                  type="number"
+                  formControlName="termMonths"
+                  class="w-full px-3 py-2 rounded-md border text-sm outline-none
+                        border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Ej: 36"
+                />
+                @if (termMonths?.touched && termMonths?.invalid) {
+                  <p class="text-xs text-rose-600 mt-1">
+                    @if (termMonths?.errors?.['required']) {
+                      El plazo es obligatorio.
+                    } @else if (termMonths?.errors?.['min']) {
+                      El plazo mínimo es 6 meses.
+                    } @else if (termMonths?.errors?.['max']) {
+                      El plazo máximo es 120 meses.
+                    }
+                  </p>
+                }
+              </div>
+            </div>
+
+            <!-- Segunda fila: tasa de referencia -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label for="referenceRate" class="block text-sm font-medium text-slate-700">
+                  Tasa de referencia (0 - 1)
+                </label>
+                <input
+                  id="referenceRate"
+                  type="number"
+                  step="0.01"
+                  formControlName="referenceRate"
+                  class="w-full px-3 py-2 rounded-md border text-sm outline-none
+                        border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Ej: 0.18"
+                />
+                @if (referenceRate?.touched && referenceRate?.invalid) {
+                  <p class="text-xs text-rose-600 mt-1">
+                    @if (referenceRate?.errors?.['required']) {
+                      La tasa es obligatoria.
+                    } @else if (referenceRate?.errors?.['min'] || referenceRate?.errors?.['max']) {
+                      La tasa debe estar entre 0.01 y 1.
+                    }
+                  </p>
+                }
+              </div>
+            </div>
+
+            <!-- Propósito -->
+            <div class="space-y-1">
+              <label for="purpose" class="block text-sm font-medium text-slate-700">
+                Propósito del crédito
+              </label>
+              <textarea
+                id="purpose"
+                rows="3"
+                formControlName="purpose"
+                class="w-full px-3 py-2 rounded-md border text-sm outline-none
+                      border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Ej: Compra de vehículo, consolidación de deudas, etc."
+              ></textarea>
+              @if (purpose?.touched && purpose?.invalid) {
+                <p class="text-xs text-rose-600 mt-1">
+                  @if (purpose?.errors?.['required']) {
+                    El propósito es obligatorio.
+                  } @else if (purpose?.errors?.['minlength']) {
+                    Describe con un poco más de detalle el propósito.
+                  }
+                </p>
               }
-            </p>
-          }
-        </div>
+            </div>
 
-        <div class="space-y-1">
-          <label for="termMonths" class="block text-sm font-medium text-slate-700">
-            Plazo (meses)
-          </label>
-          <input
-            id="termMonths"
-            type="number"
-            formControlName="termMonths"
-            class="w-full px-3 py-2 rounded-md border text-sm outline-none
-                   border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            placeholder="Ej: 36"
-          />
-          @if (termMonths?.touched && termMonths?.invalid) {
-            <p class="text-xs text-rose-600 mt-1">
-              @if (termMonths?.errors?.['required']) {
-                El plazo es obligatorio.
-              } @else if (termMonths?.errors?.['min']) {
-                El plazo mínimo es 6 meses.
-              } @else if (termMonths?.errors?.['max']) {
-                El plazo máximo es 120 meses.
-              }
-            </p>
-          }
-        </div>
-      </div>
+            <!-- Catálogos -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Producto -->
+              <div class="space-y-1">
+                <label class="block text-sm font-medium text-slate-700">
+                  Tipo de crédito
+                </label>
+                <select
+                  formControlName="creditProductId"
+                  class="w-full px-3 py-2 rounded-md border text-sm outline-none
+                        border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                >
+                  <option [ngValue]="null">Selecciona una opción</option>
+                  @for (p of creditProducts(); track p.id) {
+                    <option [ngValue]="p.id">{{ p.name }}</option>
+                  }
+                </select>
+              </div>
 
-      <!-- Segunda fila: tasa de referencia -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="space-y-1">
-          <label for="referenceRate" class="block text-sm font-medium text-slate-700">
-            Tasa de referencia (0 - 1)
-          </label>
-          <input
-            id="referenceRate"
-            type="number"
-            step="0.01"
-            formControlName="referenceRate"
-            class="w-full px-3 py-2 rounded-md border text-sm outline-none
-                   border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            placeholder="Ej: 0.18"
-          />
-          @if (referenceRate?.touched && referenceRate?.invalid) {
-            <p class="text-xs text-rose-600 mt-1">
-              @if (referenceRate?.errors?.['required']) {
-                La tasa es obligatoria.
-              } @else if (referenceRate?.errors?.['min'] || referenceRate?.errors?.['max']) {
-                La tasa debe estar entre 0.01 y 1.
-              }
-            </p>
-          }
-        </div>
-      </div>
+              <!-- Moneda -->
+              <div class="space-y-1">
+                <label class="block text-sm font-medium text-slate-700">
+                  Moneda
+                </label>
+                <select
+                  formControlName="currencyId"
+                  class="w-full px-3 py-2 rounded-md border text-sm outline-none
+                        border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                >
+                  <option [ngValue]="null">Selecciona una opción</option>
+                  @for (c of currencies(); track c.id) {
+                    <option [ngValue]="c.id">{{ c.code }} - {{ c.name }}</option>
+                  }
+                </select>
+              </div>
 
-      <!-- Propósito -->
-      <div class="space-y-1">
-        <label for="purpose" class="block text-sm font-medium text-slate-700">
-          Propósito del crédito
-        </label>
-        <textarea
-          id="purpose"
-          rows="3"
-          formControlName="purpose"
-          class="w-full px-3 py-2 rounded-md border text-sm outline-none
-                 border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-          placeholder="Ej: Compra de vehículo, consolidación de deudas, etc."
-        ></textarea>
-        @if (purpose?.touched && purpose?.invalid) {
-          <p class="text-xs text-rose-600 mt-1">
-            @if (purpose?.errors?.['required']) {
-              El propósito es obligatorio.
-            } @else if (purpose?.errors?.['minlength']) {
-              Describe con un poco más de detalle el propósito.
-            }
-          </p>
+              <!-- Fuente de ingresos -->
+              <div class="space-y-1">
+                <label class="block text-sm font-medium text-slate-700">
+                  Fuente de ingresos
+                </label>
+                <select
+                  formControlName="incomeSourceId"
+                  class="w-full px-3 py-2 rounded-md border text-sm outline-none
+                        border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                >
+                  <option [ngValue]="null">Selecciona una opción</option>
+                  @for (s of incomeSources(); track s.id) {
+                    <option [ngValue]="s.id">{{ s.description }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <!-- Botón -->
+            <div class="pt-2 flex justify-end gap-2">
+              <button
+                type="button"
+                routerLink="../credits"
+                class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 border border-slate-300 hover:bg-slate-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                [disabled]="isSubmitting() || form.invalid"
+                class="px-4 py-2 rounded-md text-sm font-medium
+                      text-white bg-indigo-600 hover:bg-indigo-500
+                      disabled:opacity-60 disabled:cursor-not-allowed
+                      inline-flex items-center gap-2"
+              >
+                @if (!isSubmitting()) {
+                  <span>Crear solicitud</span>
+                } @else {
+                  <span class="flex items-center gap-2">
+                    <span
+                      class="h-4 w-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin"
+                    ></span>
+                    Enviando...
+                  </span>
+                }
+              </button>
+            </div>
+          </form>
         }
       </div>
 
-      <!-- Catálogos -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Producto -->
-        <div class="space-y-1">
-          <label class="block text-sm font-medium text-slate-700">
-            Tipo de crédito
-          </label>
-          <select
-            formControlName="creditProductId"
-            class="w-full px-3 py-2 rounded-md border text-sm outline-none
-                   border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
-          >
-            <option [ngValue]="null">Selecciona una opción</option>
-            @for (p of creditProducts(); track p.id) {
-              <option [ngValue]="p.id">{{ p.name }}</option>
-            }
-          </select>
-        </div>
-
-        <!-- Moneda -->
-        <div class="space-y-1">
-          <label class="block text-sm font-medium text-slate-700">
-            Moneda
-          </label>
-          <select
-            formControlName="currencyId"
-            class="w-full px-3 py-2 rounded-md border text-sm outline-none
-                   border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
-          >
-            <option [ngValue]="null">Selecciona una opción</option>
-            @for (c of currencies(); track c.id) {
-              <option [ngValue]="c.id">{{ c.code }} - {{ c.name }}</option>
-            }
-          </select>
-        </div>
-
-        <!-- Fuente de ingresos -->
-        <div class="space-y-1">
-          <label class="block text-sm font-medium text-slate-700">
-            Fuente de ingresos
-          </label>
-          <select
-            formControlName="incomeSourceId"
-            class="w-full px-3 py-2 rounded-md border text-sm outline-none
-                   border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
-          >
-            <option [ngValue]="null">Selecciona una opción</option>
-            @for (s of incomeSources(); track s.id) {
-              <option [ngValue]="s.id">{{ s.description }}</option>
-            }
-          </select>
-        </div>
-      </div>
-
-      <!-- Botón -->
-      <div class="pt-2 flex justify-end gap-2">
-        <button
-          type="button"
-          routerLink="../credits"
-          class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 border border-slate-300 hover:bg-slate-50"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          [disabled]="isSubmitting() || form.invalid"
-          class="px-4 py-2 rounded-md text-sm font-medium
-                 text-white bg-indigo-600 hover:bg-indigo-500
-                 disabled:opacity-60 disabled:cursor-not-allowed
-                 inline-flex items-center gap-2"
-        >
-          @if (!isSubmitting()) {
-            <span>Crear solicitud</span>
-          } @else {
-            <span class="flex items-center gap-2">
-              <span
-                class="h-4 w-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin"
-              ></span>
-              Enviando...
-            </span>
-          }
-        </button>
-      </div>
-    </form>
-  }
+    </div>
 </div>
+

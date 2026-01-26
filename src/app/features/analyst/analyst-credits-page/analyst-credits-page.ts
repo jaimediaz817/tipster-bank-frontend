@@ -16,13 +16,14 @@ import {
   CreditKpiSummary,
 } from '../../../core/models/credit.models';
 import { ToastStore } from '../../../core/state/toast.store';
+import { BackButton } from '../../shared/back-button/back-button';
 
 type StatusFilter = CreditStatus | 'ALL';
 
 @Component({
   selector: 'app-analyst-credits-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, BackButton],
   templateUrl: './analyst-credits-page.html',
 })
 export class AnalystCreditsPage implements OnInit {

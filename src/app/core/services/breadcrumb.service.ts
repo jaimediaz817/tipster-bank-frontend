@@ -7,42 +7,44 @@ import { Breadcrumb } from '../models/breadcrumb.model';
   providedIn: 'root',
 })
 export class BreadcrumbService {
-  private readonly _breadcrumbs = signal<Breadcrumb[]>([]);
-  readonly breadcrumbs = this._breadcrumbs.asReadonly();
+    private readonly _breadcrumbs = signal<Breadcrumb[]>([]);
+    readonly breadcrumbs = this._breadcrumbs.asReadonly();
 
-  constructor(private router: Router) {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        const root = this.router.routerState.snapshot.root;
-        const breadcrumbs: Breadcrumb[] = [];
-        this.addBreadcrumb(root, '', breadcrumbs);
-        this._breadcrumbs.set(breadcrumbs);
-      });
-  }
-
-  private addBreadcrumb(
-    route: ActivatedRouteSnapshot | null,
-    parentUrl: string,
-    breadcrumbs: Breadcrumb[]
-  ) {
-    if (!route) {
-      return;
+    constructor(private router: Router) {
+        this.router.events
+            .pipe(filter((event) => event instanceof NavigationEnd))
+            .subscribe(() => {
+                const root = this.router.routerState.snapshot.root;
+                const breadcrumbs: Breadcrumb[] = [];
+                this.addBreadcrumb(root, '', breadcrumbs);
+                this._breadcrumbs.set(breadcrumbs);
+            });
     }
 
-    // Construye la URL de la ruta actual
-    const routeUrl = `${parentUrl}/${route.url.map((segment) => segment.path).join('/')}`;
+    private addBreadcrumb(
+        route: ActivatedRouteSnapshot | null,
+        parentUrl: string,
+        breadcrumbs: Breadcrumb[]
+    ) {
+        if (!route) return;
 
-    // Si la ruta tiene un 'breadcrumb' definido en su 'data', lo añadimos
-    if (route.data['breadcrumb']) {
-      const breadcrumb: Breadcrumb = {
-        label: route.data['breadcrumb'],
-        url: routeUrl,
-      };
-      breadcrumbs.push(breadcrumb);
+        const segment = route.url.map((s) => s.path).filter(Boolean).join('/');
+        // Normaliza la URL acumulada
+        const routeUrl = parentUrl
+            ? segment
+            ? `${parentUrl}/${segment}`
+            : parentUrl
+            : segment
+            ? `/${segment}`
+            : '/';
+
+        // Si hay etiqueta de breadcrumb, añadimos
+        const label = route.data?.['breadcrumb'];
+        if (label) {
+            breadcrumbs.push({ label, url: routeUrl });
+        }
+
+        // Avanza al primer hijo (outlet primario)
+        this.addBreadcrumb(route.firstChild, routeUrl, breadcrumbs);
     }
-
-    // Llamada recursiva para el siguiente nivel de anidación
-    this.addBreadcrumb(route.firstChild, routeUrl, breadcrumbs);
-  }
 }

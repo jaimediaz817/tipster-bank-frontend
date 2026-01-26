@@ -72,3 +72,10 @@ ng generate component features/shared/status-amount-bar-chart --standalone --fla
 npm install jspdf jspdf-autotable xlsx
 npm install @types/jspdf -D
 
+## servicios:
+ng generate service core/services/reports --skip-tests
+
+## ComponenteS:
+ng g c features/reports/reports-list-page --standalone --skip-tests
+ng g c features/reports/detailed-portfolio-report-page --standalone --skip-tests
+ng g c features/reports/client-exposure-report-page --standalone --skip-tests

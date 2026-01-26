@@ -12,102 +12,58 @@ import { AuthStore } from './core/state/auth.store';
 @Component({ standalone: true, template: '' })
 class EmptyRedirectComponent {}
 
-        export const routes: Routes = [
-        {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: 'auth',
-        },
-        {
-            path: 'auth',
-            loadChildren: () =>
-            import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
-        },
-        {
-            path: 'dashboard',
-            canActivate: [authGuard],
-            component: DashboardShell,
-            children: [
-            {
-                path: '',
-                pathMatch: 'full',
-                // Lógica de carga/redirección inteligente
-                canActivate: [() => {
-                  const authStore = inject(AuthStore);
-                  const router = inject(Router);
-                  const user = authStore.currentUser();
-                  
-                  // Si es cliente, lo mandamos a su lista de créditos.
-                  if (user?.roles.includes(UserRole.CLIENTE)) {
-                      return router.parseUrl('/dashboard/client/credits');
-                  }
-                  
-                  // Para cualquier otro rol (Analista/Admin), permitimos que la ruta continúe.
-                  return true;
-                }],
-                // Si canActivate devuelve true, se carga este componente.
-                loadComponent: () => import('./features/dashboard/dashboard-home-page/dashboard-home-page').then(m => m.DashboardHomePage),
-            },
-            {
-                path: 'client/credits',
-                canActivate: [roleGuard],
-                data: { roles: [UserRole.CLIENTE] },
-                loadComponent: () =>
-                import('./features/credits/client-credits-page/client-credits-page').then(
-                    (m) => m.ClientCreditsPage,
-                ),
-            },
-            {
-                path: 'client/new',
-                canActivate: [roleGuard],
-                data: { roles: [UserRole.CLIENTE] },
-                loadComponent: () =>
-                import('./features/credits/new-credit-request-page/new-credit-request-page').then(
-                    (m) => m.NewCreditRequestPage,
-                ),
-            },
-            {
-                path: 'analyst/credits',
-                canActivate: [roleGuard],
-                data: { roles: [UserRole.ANALISTA, UserRole.ADMIN] },
-                loadComponent: () =>
-                import('./features/analyst/analyst-credits-page/analyst-credits-page').then(
-                    (m) => m.AnalystCreditsPage,
-                ),
-            },            
-            {
-                path: 'analyst/credits',
-                canActivate: [roleGuard],
-                data: { roles: [UserRole.ANALISTA, UserRole.ADMIN] },
-                loadComponent: () =>
-                import('./features/analyst/analyst-credits-page/analyst-credits-page').then(
-                    (m) => m.AnalystCreditsPage,
-                ),
-            },
+export const routes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'auth',
+  },
+  {
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
+  },
+  {
+    path: 'dashboard',
+    canActivate: [
+        //   authGuard,
+        //   (route, state) => {
+        //     const authStore = inject(AuthStore);
+        //     const router = inject(Router);
+        //     const user = authStore.currentUser();
 
-            // Ruta para el simulador, agrupada con las de cliente
-            {
-                path: 'client/simulador', // URL: /dashboard/client/simulador, TODO: URL: /dashboard/client/simulador
-                canActivate: [roleGuard],
-                data: { roles: [UserRole.CLIENTE, UserRole.ANALISTA] },
-                loadComponent: () =>
-                    import('./features/client/credit-simulator-page/credit-simulator-page')
-                    .then(m => m.CreditSimulatorPage),
-            },
+        //     // Solo aplica cuando la URL es exactamente '/dashboard'
+        //     if (state.url === '/dashboard') {
+        //       if (user?.roles.includes(UserRole.CLIENTE) && user.roles.length === 1) {
+        //         return router.parseUrl('/dashboard/client/home');
+        //       }
+        //       return router.parseUrl('/dashboard/analyst/home');
+        //     }
+        //     return true;
+        //   },
+        authGuard,
+        (route, state) => {
+        const authStore = inject(AuthStore);
+        const router = inject(Router);
+        const user = authStore.currentUser();
 
-            {
-                path: 'reports',
-                canActivate: [authGuard, roleGuard],
-                data: { roles: [UserRole.ANALISTA] },
-                loadChildren: () =>
-                    import('./features/reports/reports.routes').then((m) => m.REPORTS_ROUTES),
-            },            
-        
-        ],
-    },
+        if (state.url === '/dashboard') {
+            const roles = user?.roles ?? [];
+            const isAnalyst = roles.includes(UserRole.ANALISTA) || roles.includes(UserRole.ADMIN);
+            const isClient  = roles.includes(UserRole.CLIENTE);
 
-    {
-        path: '**',
-        redirectTo: 'auth',
-    },
-    ];
+            if (isAnalyst) return router.parseUrl('/dashboard/analyst/home');
+            if (isClient)  return router.parseUrl('/dashboard/client/home');
+
+            return router.parseUrl('/auth/login');
+        }
+        return true;
+        },    
+    ],
+    loadChildren: () =>
+      import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
+  },
+  {
+    path: '**',
+    redirectTo: 'dashboard',
+  },
+];

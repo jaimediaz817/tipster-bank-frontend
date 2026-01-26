@@ -8,7 +8,7 @@ import { CreditsSummary } from '../models/credits-summary.models';
 export class CreditsService {
 
     private readonly http = inject(HttpClient);
-    private readonly baseUrl = 'http://localhost:8080/api/credits';
+    private readonly baseUrl = 'http://localhost:8080/api/lending/credits';
 
     // CLIENTE
     getMyCredits(): Observable<CreditApplication[]> {

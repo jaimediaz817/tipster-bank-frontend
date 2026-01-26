@@ -4,18 +4,19 @@ import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { PaymentsService } from '../../../core/services/payments.service';
 import {
   PaymentSimulationRequest,
   PaymentInstallment,
 } from '../../../core/models/payments.models';
+import { BackButton } from '../../shared/back-button/back-button';
 
 @Component({
   selector: 'app-credit-simulator-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, BackButton],
   templateUrl: './credit-simulator-page.html',
 })
 export class CreditSimulatorPage {

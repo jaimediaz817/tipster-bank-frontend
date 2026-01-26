@@ -7,10 +7,9 @@ import { Breadcrumbs } from "../../shared/breadcumbs/breadcumbs";
   standalone: true,
   template: `
     <div> 
-      <app-breadcrumbs></app-breadcrumbs>
       <router-outlet></router-outlet>
     </div>            
             `,
-  imports: [RouterOutlet, Breadcrumbs],
+  imports: [RouterOutlet],
 })
 export class AnalystShellComponent {}

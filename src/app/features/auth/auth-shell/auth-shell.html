@@ -1,37 +1,73 @@
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-  <div class="w-full max-w-md bg-white shadow-lg rounded-2xl p-8 border border-slate-100">
+<div class="min-h-screen w-full grid grid-cols-1 md:grid-cols-2">
+  <!-- Columna Izquierda: Branding con Vídeo de Fondo -->
+  <div class="hidden md:flex relative overflow-hidden">
+    <!-- Vídeo de fondo -->
+    <video
+      autoplay="autoplay"
+      loop
+      muted
+      playsinline
+      class="absolute top-0 left-0 w-full h-full object-cover z-0"
+      src="/assets/videos/video-login-bg.mp4"
+    ></video>
 
-    <!-- Header -->
-    <div class="mb-6 text-center">
-      <h1 class="text-2xl font-semibold text-slate-900">
-        Plataforma de Créditos
-      </h1>
-      <p class="mt-2 text-sm text-slate-500">
-        Gestiona solicitudes y aprobaciones de crédito de forma segura.
-      </p>
+    <!-- Overlay oscuro -->
+    <div class="absolute inset-0 bg-slate-900/70 z-10"></div>
+
+    <!-- Contenido de texto -->
+    <div class="relative z-20 flex flex-col justify-center items-center p-12 text-white w-full">
+      <div class="text-center space-y-4">
+        <!-- INICIO: Logo personalizado -->
+        <div class="w-20 h-20 mx-auto flex items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-violet-400 shadow-lg">
+          <span class="text-4xl font-bold text-white">T</span>
+        </div>
+        <!-- FIN: Logo personalizado -->
+        <h1 class="text-3xl font-bold tracking-tight">TipsterBank</h1>
+        <p class="text-slate-300 max-w-sm">
+          La plataforma moderna para la gestión de créditos. Rápido, seguro y confiable.
+        </p>
+      </div>
+      <div class="absolute bottom-4 text-xs text-slate-400 z-10">
+         TipsterBank. Todos los derechos reservados.
+      </div>
     </div>
+  </div>
 
-    <!-- Tabs -->
-    <div class="flex mb-6 border-b border-slate-200 text-sm font-medium">
-      <a
-        routerLink="/auth/login"
-        routerLinkActive="text-brand-600 border-b-2 border-brand-600"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="flex-1 text-center py-2 cursor-pointer text-slate-500 hover:text-slate-700 border-b-2 border-transparent transition"
-      >
-        Iniciar sesión
-      </a>
-      <a
-        routerLink="/auth/register"
-        routerLinkActive="text-brand-600 border-b-2 border-brand-600"
-        class="flex-1 text-center py-2 cursor-pointer text-slate-500 hover:text-slate-700 border-b-2 border-transparent transition"
-      >
-        Crear cuenta
-      </a>
+  <!-- Columna Derecha: Formulario -->
+  <div class="flex flex-col justify-center items-center p-4 sm:p-6 md:p-8 bg-slate-50">
+    <div class="w-full max-w-sm space-y-6 bg-white p-8 rounded-xl shadow-2xl border border-slate-200">
+      <!-- Header -->
+      <div class="text-center">
+        <h2 class="text-2xl font-semibold text-slate-900">
+          Bienvenido de Nuevo
+        </h2>
+        <p class="mt-1 text-sm text-slate-500">
+          Ingresa tus credenciales para acceder a tu cuenta.
+        </p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex border-b border-slate-200 text-sm font-medium">
+        <a
+          routerLink="/auth/login"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="border-slate-900 text-slate-900"
+          class="flex-1 text-center py-2 border-b-2"
+        >
+          Iniciar Sesión
+        </a>
+        <a
+          routerLink="/auth/register"
+          routerLinkActive="border-slate-900 text-slate-900"
+          class="flex-1 text-center py-2 border-b-2 text-slate-500"
+        >
+          Crear Cuenta
+        </a>
+      </div>
+
+      <!-- Contenido: login / register -->
+      <router-outlet></router-outlet>
     </div>
-
-    <!-- Contenido: login / register -->
-    <router-outlet></router-outlet>
-
   </div>
 </div>
+

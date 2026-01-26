@@ -6,11 +6,12 @@ import { ClientExposureReport } from '../../../core/models/reports.models';
 import { ToastStore } from '../../../core/state/toast.store';
 import { ReportsService } from '../../../core/services/reports';
 import { ExportService } from '../../../core/services/export.service';
+import { BackButton } from '../../shared/back-button/back-button';
 
 @Component({
   selector: 'app-client-exposure-report-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BackButton],
   templateUrl: './client-exposure-report-page.html',
 })
 export class ClientExposureReportPage implements OnInit {

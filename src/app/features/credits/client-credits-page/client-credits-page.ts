@@ -2,14 +2,12 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreditsService } from '../../../core/services/credits.service';
 import { CreditApplication, CreditStatus } from '../../../core/models/credit.models';
-// import { CreditsService } from '../../core/services/credits.service';
-import { RouterLink } from '@angular/router'; // <--- Importar RouterLink
-// import { CreditApplication, CreditStatus } from '../../core/models/credit.models';
+import { BackButton } from '../../shared/back-button/back-button';
 
 @Component({
   selector: 'app-client-credits-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, BackButton],
   templateUrl: './client-credits-page.html',
   styleUrls: ['./client-credits-page.css'],
 })
