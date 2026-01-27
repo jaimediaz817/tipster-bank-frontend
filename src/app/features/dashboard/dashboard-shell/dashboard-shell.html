@@ -81,6 +81,7 @@
             }"
         >
             <app-sidebar-menu-ctm
+                [isDesktop]="isDesktop()"
                 [sidebarOpen]="sidebarOpen()"
                 [groups]="groups()"
                 [homeLinkSegments]="homeLinkSegments()"
@@ -88,15 +89,19 @@
                 [activeGroupByUrl]="activeGroupByUrl()"
                 (groupClicked)="openGroup($event)"
                 (logoutClicked)="logout()"
+                (linkClicked)="onLinkClick()"
             ></app-sidebar-menu-ctm>
         </div>
 
-        @if (flyoutGroup(); as group) {
-            <app-flyout-panel-ctm
-                [group]="group"
-                [sidebarOpen]="sidebarOpen()"
-                (close)="closeFlyout()"
-            ></app-flyout-panel-ctm>
+        <!-- El flyout SÓLO se muestra en DESKTOP -->
+        @if (isDesktop()) {
+            @if (flyoutGroup(); as group) {
+                <app-flyout-panel-ctm
+                    [group]="group"
+                    [sidebarOpen]="sidebarOpen()"
+                    (close)="closeFlyout()"
+                ></app-flyout-panel-ctm>
+            }
         }
 
         <!-- Contenido Principal con padding dinámico -->
@@ -104,7 +109,7 @@
             class="h-full overflow-y-auto py-6 transition-all duration-300 ease-in-out"
             [ngStyle]="{
                 'padding-left': isDesktop() ? (sidebarOpen() ? '18rem' : '5rem') : '0',
-                'padding-top': '5rem',
+                'padding-top': '1rem',
             }"
         >
             <!--  TODO: PADING EN EL CONTENIDO CONCRETO sm:px-6 md:px-8 -->

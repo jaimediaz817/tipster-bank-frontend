@@ -7,8 +7,5 @@
      * Apuntamos al contenedor del sidebar por su ID cuando está visible 
      * (tiene la clase 'translate-x-0').
      */
-    .asidebar-menu-ctm-container { /* <-- Busca este ID */
-        width: 45%;
-        display: flex;
-    }
+
 }

@@ -11,6 +11,7 @@ import { NavGroup } from '../../models/navigation.model';
     styleUrl: './sidebar-menu-ctm.css',
 })
 export class SidebarMenuCtm {
+    @Input({ required: true }) isDesktop!: boolean;
     @Input({ required: true }) sidebarOpen!: boolean;
     @Input({ required: true }) groups: NavGroup[] = [];
     @Input({ required: true }) homeLinkSegments: string[] = [];
@@ -19,6 +20,7 @@ export class SidebarMenuCtm {
 
     @Output() groupClicked = new EventEmitter<{ group: NavGroup; event: MouseEvent }>();
     @Output() logoutClicked = new EventEmitter<void>();
+    @Output() linkClicked = new EventEmitter<void>();
 
     onGroupClick(group: NavGroup, event: MouseEvent): void {
         event.stopPropagation();
@@ -27,5 +29,12 @@ export class SidebarMenuCtm {
 
     onLogoutClick(): void {
         this.logoutClicked.emit();
+    }
+
+    /**
+     * Maneja el clic en un enlace de navegación.
+     */
+    onLinkClick(): void {
+        this.linkClicked.emit();
     }
 }

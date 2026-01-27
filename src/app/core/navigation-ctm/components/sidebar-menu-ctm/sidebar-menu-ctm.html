@@ -1,55 +1,85 @@
 <aside
     class="asidebar-menu-ctm-container h-full flex flex-col justify-between transition-all duration-300 ease-in-out text-white"
-    [class.w-72]="sidebarOpen"
-    [class.w-20]="!sidebarOpen"
+    [ngClass]="{
+        'w-72': sidebarOpen || !isDesktop,
+        'w-18': !sidebarOpen && isDesktop
+    }"
     style="background: linear-gradient(180deg, #212529 0%, #334155 100%)"
 >
-    <nav class="mt-4 px-3 space-y-2">
+    <nav class="mt-4 px-3 space-y-2 flex-1 overflow-y-auto">
         <!-- BOTÓN INICIO -->
         <a
             [routerLink]="homeLinkSegments"
             routerLinkActive="bg-indigo-600 text-white"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150"
+            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150 hover:bg-slate-700"
             title="Inicio"
+            (click)="onLinkClick()"
         >
             <span class="material-symbols-outlined text-xl">home</span>
-            @if (sidebarOpen) {
+            @if (sidebarOpen || !isDesktop) {
                 <span class="truncate">Inicio</span>
             }
         </a>
 
-        <!-- BOTONES DE GRUPO -->
+        <!-- BOTONES DE GRUPO (CON LÓGICA DE ACORDEÓN) -->
         @for (group of groups; track group.id) {
-            <button
-                (click)="onGroupClick(group, $event)"
-                [title]="group.label"
-                class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150"
-                [ngClass]="{
-                    'bg-indigo-600 text-white': flyoutGroup
-                        ? flyoutGroup === group
-                        : activeGroupByUrl === group,
-                    'text-slate-300 hover:bg-slate-700 hover:text-white': !(flyoutGroup
-                        ? flyoutGroup === group
-                        : activeGroupByUrl === group),
-                }"
-            >
-                <span class="material-symbols-outlined text-xl">{{ group.icon }}</span>
-                @if (sidebarOpen) {
-                    <span class="truncate">{{ group.label }}</span>
+            <div>
+                <button
+                    (click)="onGroupClick(group, $event)"
+                    [title]="group.label"
+                    class="w-full flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150 hover:bg-slate-700"
+                    [ngClass]="{
+                        'bg-slate-700': flyoutGroup?.id === group.id,
+                        'bg-indigo-600 text-white': flyoutGroup?.id !== group.id && activeGroupByUrl === group
+                    }"
+                >
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-xl">{{ group.icon }}</span>
+                        @if (sidebarOpen || !isDesktop) {
+                            <span class="truncate">{{ group.label }}</span>
+                        }
+                    </div>
+                    <!-- Flecha para acordeón (visible si hay texto) -->
+                    @if ((sidebarOpen || !isDesktop) && group.links.length > 0) {
+                        <span
+                            class="material-symbols-outlined text-base transition-transform"
+                            [class.rotate-180]="flyoutGroup?.id === group.id"
+                        >
+                            expand_more
+                        </span>
+                    }
+                </button>
+
+                <!-- ACORDEÓN: Se muestra solo en móvil si el grupo está activo -->
+                @if (!isDesktop && flyoutGroup?.id === group.id) {
+                    <div class="pl-6 pt-2 space-y-1 border-l border-slate-600 ml-4">
+                        @for (link of group.links; track link.routerLink) {
+                            <a
+                                [routerLink]="link.routerLink"
+                                routerLinkActive="text-indigo-400 font-semibold"
+                                [routerLinkActiveOptions]="{ exact: true }"
+                                class="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors duration-150 text-slate-300 hover:text-white"
+                                (click)="onLinkClick()"
+                            >
+                                <span class="material-symbols-outlined text-lg">{{ link.icon }}</span>
+                                <span class="truncate">{{ link.label }}</span>
+                            </a>
+                        }
+                    </div>
                 }
-            </button>
+            </div>
         }
     </nav>
     <!-- Sección inferior (Logout) -->
-    <div class="px-3 py-4">
+    <div class="px-3 py-4 border-t border-slate-700/50">
         <button
             (click)="onLogoutClick()"
             title="Cerrar sesión"
-            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors text-slate-300 hover:bg-[#f87171] hover:text-white"
+            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors text-slate-300 hover:bg-red-500/80 hover:text-white"
         >
             <span class="material-symbols-outlined text-xl">logout</span>
-            @if (sidebarOpen) {
+            @if (sidebarOpen || !isDesktop) {
                 <span class="truncate">Cerrar sesión</span>
             }
         </button>
