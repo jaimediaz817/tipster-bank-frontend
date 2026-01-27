@@ -1,0 +1,14 @@
+/*
+* Estilos para el Sidebar en Móvil (< 768px)
+* Hacemos que el sidebar no ocupe toda la pantalla para una mejor UX.
+*/
+@media (max-width: 767px) {
+    /* 
+     * Apuntamos al contenedor del sidebar por su ID cuando está visible 
+     * (tiene la clase 'translate-x-0').
+     */
+    .asidebar-menu-ctm-container { /* <-- Busca este ID */
+        width: 45%;
+        display: flex;
+    }
+}

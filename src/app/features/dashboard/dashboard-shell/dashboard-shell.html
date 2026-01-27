@@ -66,14 +66,19 @@
     </header>
 
     <!-- Cuerpo: sidebar + contenido -->
-    <div class="flex flex-1">
-        <!-- Sidebar vertical: solo visible en desktop y en mobile solo si está abierto -->
+    <div class="flex flex-1 pt-20">
+
+   
+        <!-- Contenedor del Sidebar -->
+        <!-- En DESKTOP: es visible y empuja el contenido. -->
+        <!-- En MÓVIL: está oculto por defecto y se superpone (drawer). -->
         <div
-            class="fixed top-20 bottom-0 left-0 z-40 transition-transform duration-300 md:block"
-            [class.-translate-x-full]="!sidebarOpen()"
-            [class.block]="sidebarOpen()"
-            [class.hidden]="!sidebarOpen() && !isDesktop"
-            style="width: 18rem"
+            id="app-sidebar-wrapper"
+            class="fixed top-20 bottom-0 left-0 z-40 transition-transform duration-300 ease-in-out md:block"
+            [ngClass]="{
+                'translate-x-0': sidebarOpen() || isDesktop(),
+                '-translate-x-full': !sidebarOpen() && !isDesktop()
+            }"
         >
             <app-sidebar-menu-ctm
                 [sidebarOpen]="sidebarOpen()"
