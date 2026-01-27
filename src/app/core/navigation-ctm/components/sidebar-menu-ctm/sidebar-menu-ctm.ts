@@ -1,67 +1,31 @@
-import { Component, Input, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, NavigationEnd, RouterLink } from '@angular/router';
-import { filter } from 'rxjs';
-import { NavigationService } from '../../services/navigation.service';
-import { NavigationItem } from '../../models/navigation.model';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NavGroup } from '../../models/navigation.model';
 
 @Component({
-  selector: 'app-sidebar-menu-ctm',
-  standalone: true,
-  imports: [CommonModule, RouterLink],
-  templateUrl: './sidebar-menu-ctm.html',
-  styleUrls: ['./sidebar-menu-ctm.css'],
+    selector: 'app-sidebar-menu-ctm',
+    standalone: true,
+    imports: [CommonModule, RouterLink, RouterLinkActive],
+    templateUrl: './sidebar-menu-ctm.html',
+    styleUrl: './sidebar-menu-ctm.css',
 })
 export class SidebarMenuCtm {
-  private readonly navigationService = inject(NavigationService);
-  private readonly router = inject(Router);
+    @Input({ required: true }) sidebarOpen!: boolean;
+    @Input({ required: true }) groups: NavGroup[] = [];
+    @Input({ required: true }) homeLinkSegments: string[] = [];
+    @Input({ required: true }) flyoutGroup: NavGroup | null = null;
+    @Input({ required: true }) activeGroupByUrl: NavGroup | null = null;
 
-  @Input() autoOpenForActiveRoute = true;
+    @Output() groupClicked = new EventEmitter<{ group: NavGroup; event: MouseEvent }>();
+    @Output() logoutClicked = new EventEmitter<void>();
 
-  readonly items = this.navigationService.items;
+    onGroupClick(group: NavGroup, event: MouseEvent): void {
+        event.stopPropagation();
+        this.groupClicked.emit({ group, event });
+    }
 
-  // Estado del panel
-  readonly panelStack = signal<{ item: NavigationItem }[]>([]);
-  readonly activePanel = computed(() => this.panelStack().at(-1));
-
-  // Derivadas seguras para el template
-  readonly activeGroups = computed(() => this.activePanel()?.item?.groups ?? []);
-  readonly activeTitle = computed(() => this.activePanel()?.item?.label ?? '');
-  readonly hasActivePanel = computed(() => this.activeGroups().length > 0);
-
-  // URL activa para resaltar items de grupo
-  private readonly activeUrl = signal<string>('');
-
-  constructor() {
-    // Sincroniza la URL activa
-    this.activeUrl.set(this.router.url);
-    this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e) => {
-      this.activeUrl.set((e as NavigationEnd).urlAfterRedirects);
-    });
-
-    // Auto-abre el item cuyo grupo contiene la ruta actual
-    effect(() => {
-      if (!this.autoOpenForActiveRoute) return;
-      const url = this.activeUrl();
-      const matched = this.items().find((item) =>
-        (item.groups ?? []).some((g) => g.links.some((l) => url.startsWith(l.routerLink))),
-      );
-      if (matched && !this.activePanel()) {
-        this.openItem(matched);
-      }
-    });
-  }
-
-  isItemActive(item: NavigationItem): boolean {
-    const url = this.activeUrl();
-    return (item.groups ?? []).some((g) => g.links.some((l) => url.startsWith(l.routerLink)));
-  }
-
-  openItem(item: NavigationItem): void {
-    this.panelStack.set([{ item }]);
-  }
-
-  closePanels(): void {
-    this.panelStack.set([]);
-  }
+    onLogoutClick(): void {
+        this.logoutClicked.emit();
+    }
 }

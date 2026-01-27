@@ -1,0 +1,37 @@
+<!-- Overlay para cerrar al hacer clic fuera -->
+<div
+    (click)="onClose()"
+    class="sidebar-overlay"
+    [class.sidebar-open]="sidebarOpen"
+></div>
+
+<div class="sidebar-flyout" [class.sidebar-open]="sidebarOpen">
+    <!-- Encabezado del panel -->
+    <div class="panel-header">
+        <h3 class="panel-title">{{ group.label }}</h3>
+        <button (click)="onClose()" class="icon-btn" aria-label="Cerrar panel">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+
+    <!-- Contenido del panel (enlaces) -->
+    <div class="panel-content">
+        <nav class="links">
+            @for (link of group.links; track link.routerLink) {
+                <a
+                    [routerLink]="link.routerLink"
+                    routerLinkActive="link-item-active"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    class="link-item"
+                    (click)="onClose()"
+                >
+                    <span class="material-symbols-outlined icon">{{ link.icon }}</span>
+                    <span class="flex-1">{{ link.label }}</span>
+                    @if (link.isNew) {
+                        <span class="new-badge">Nuevo</span>
+                    }
+                </a>
+            }
+        </nav>
+    </div>
+</div>

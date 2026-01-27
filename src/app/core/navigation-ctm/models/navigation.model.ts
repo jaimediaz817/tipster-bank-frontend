@@ -33,3 +33,24 @@ export interface NavigationItem {
   routerLink?: string;
   groups?: NavigationGroup[];
 }
+
+
+
+// --------------------------------------
+// V2
+// --------------------------------------
+// Define la estructura de los enlaces y grupos para claridad
+export interface NavLink {
+  label: string;
+  routerLink: string;
+  icon: string; // Icono de Material Symbols (ej: 'add_circle')
+  isNew?: boolean; // Etiqueta opcional "Nuevo"
+}
+
+export interface NavGroup {
+  id: string; // Identificador único para el grupo
+  label: string;
+  icon: string; // Icono para el botón principal del sidebar
+  roles: UserRole[];
+  links: NavLink[];
+}

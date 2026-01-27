@@ -128,26 +128,29 @@
   </div>
 
   <!-- Botón submit -->
-  <button
-    type="submit"
-    [disabled]="isSubmitting() || form.invalid"
-    class="w-full flex items-center justify-center gap-2 mt-2
-           px-4 py-2 rounded-md text-sm font-medium
-           text-white bg-brand-600 hover:bg-brand-500
-           disabled:opacity-60 disabled:cursor-not-allowed
-           transition-colors"
-  >
-    @if (!isSubmitting()) {
-      <span>Crear cuenta</span>
-    } @else {
-      <span class="flex items-center gap-2">
-        <span
-          class="h-4 w-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin"
-        ></span>
-        Registrando...
-      </span>
-    }
-  </button>
+<button
+  type="submit"
+  [disabled]="isSubmitting() || form.invalid"
+  class="w-full flex items-center justify-center gap-2 mt-4
+         px-5 py-2.5 rounded-lg text-base font-semibold
+         text-white bg-indigo-600 hover:bg-indigo-500
+         shadow-md border border-indigo-700
+         disabled:opacity-60 disabled:cursor-not-allowed
+         transition-all duration-150"
+  style="letter-spacing: 0.01em;"
+>
+  @if (!isSubmitting()) {
+    <span class="tracking-tight">Crear cuenta</span>
+  } @else {
+    <span class="flex items-center gap-2">
+      <span
+        class="h-5 w-5 border-2 border-white/60 border-t-transparent rounded-full animate-spin"
+        style="border-width: 3px;"
+      ></span>
+      Registrando...
+    </span>
+  }
+</button>
 
   <!-- Texto secundario -->
   <p class="mt-2 text-xs text-center text-slate-500">

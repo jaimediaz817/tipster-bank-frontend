@@ -1,45 +1,57 @@
-<!-- Contenedor relativo para anclar el panel al borde del sidebar -->
-<div class="sidebar-menu-ctm-container">
-  <nav class="flex flex-col gap-1">
-    <div class="space-y-1">
-      @for (item of items(); track item.label) {
-        <button
-          class="menu-item flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors"
-          [ngClass]="{
-            'text-white bg-slate-700': isItemActive(item),
-            'text-slate-300 hover:bg-slate-700 hover:text-white': !isItemActive(item)
-          }"
-          (click)="item.isMenu ? openItem(item) : null"
+<aside
+    class="h-full flex flex-col justify-between transition-all duration-300 ease-in-out text-white"
+    [class.w-72]="sidebarOpen"
+    [class.w-20]="!sidebarOpen"
+    style="background: linear-gradient(180deg, #212529 0%, #334155 100%)"
+>
+    <nav class="mt-4 px-3 space-y-2">
+        <!-- BOTÓN INICIO -->
+        <a
+            [routerLink]="homeLinkSegments"
+            routerLinkActive="bg-indigo-600 text-white"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150"
+            title="Inicio"
         >
-          <span class="material-symbols-outlined text-base">{{ item.icon }}</span>
-          <span>{{ item.label }}</span>
-        </button>
-      }
-    </div>
-  </nav>
+            <span class="material-symbols-outlined text-xl">home</span>
+            @if (sidebarOpen) {
+                <span class="truncate">Inicio</span>
+            }
+        </a>
 
-  @if (hasActivePanel()) {
-    <div class="submenu-panel">
-      <div class="panel-header">
-        <h3 class="panel-title">{{ activeTitle() }}</h3>
-        <button class="icon-btn" (click)="closePanels()" aria-label="Cerrar">✕</button>
-      </div>
-
-      <div class="panel-content">
-        @for (group of activeGroups(); track group.title) {
-          <div class="group-block">
-            <div class="group-title">{{ group.title }}</div>
-            <div class="links">
-              @for (link of group.links; track link.label) {
-                <a class="link-item" [routerLink]="link.routerLink">
-                  <span class="material-symbols-outlined text-sm">{{ link.icon }}</span>
-                  <span>{{ link.label }}</span>
-                </a>
-              }
-            </div>
-          </div>
+        <!-- BOTONES DE GRUPO -->
+        @for (group of groups; track group.id) {
+            <button
+                (click)="onGroupClick(group, $event)"
+                [title]="group.label"
+                class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150"
+                [ngClass]="{
+                    'bg-indigo-600 text-white': flyoutGroup
+                        ? flyoutGroup === group
+                        : activeGroupByUrl === group,
+                    'text-slate-300 hover:bg-slate-700 hover:text-white': !(flyoutGroup
+                        ? flyoutGroup === group
+                        : activeGroupByUrl === group),
+                }"
+            >
+                <span class="material-symbols-outlined text-xl">{{ group.icon }}</span>
+                @if (sidebarOpen) {
+                    <span class="truncate">{{ group.label }}</span>
+                }
+            </button>
         }
-      </div>
+    </nav>
+    <!-- Sección inferior (Logout) -->
+    <div class="px-3 py-4">
+        <button
+            (click)="onLogoutClick()"
+            title="Cerrar sesión"
+            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors text-slate-300 hover:bg-[#f87171] hover:text-white"
+        >
+            <span class="material-symbols-outlined text-xl">logout</span>
+            @if (sidebarOpen) {
+                <span class="truncate">Cerrar sesión</span>
+            }
+        </button>
     </div>
-  }
-</div>
+</aside>
