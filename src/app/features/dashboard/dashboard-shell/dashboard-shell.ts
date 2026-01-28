@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthStore } from '../../../core/state/auth.store';
@@ -9,11 +9,12 @@ import { filter } from 'rxjs';
 import { NavigationService } from '../../../core/navigation-ctm/services/navigation.service';
 import { SidebarMenuCtm } from '../../../core/navigation-ctm/components/sidebar-menu-ctm/sidebar-menu-ctm';
 import { FlyoutPanelCtm } from '../../../core/navigation-ctm/components/flyout-panel-ctm/flyout-panel-ctm';
+import { UserMenuCtm } from '../../shared/menu-tools/user-menu/user-menu-ctm';
 
 @Component({
     selector: 'app-dashboard-shell',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, Breadcrumbs, SidebarMenuCtm, FlyoutPanelCtm],
+    imports: [CommonModule, RouterOutlet, Breadcrumbs, SidebarMenuCtm, FlyoutPanelCtm, UserMenuCtm],
     templateUrl: './dashboard-shell.html',
     styleUrls: ['./dashboard-shell.css'],
 })
@@ -27,6 +28,9 @@ export class DashboardShell {
     isDesktop = signal(window.matchMedia('(min-width: 768px)').matches);
     // ÚNICA SEÑAL para controlar el flyout. Eliminamos flyoutOpen y activeGroup.
     flyoutGroup = signal<NavGroup | null>(null);
+    // NOTE: Nuevo signal para controlar el menú de usuario
+    isUserMenuOpen = signal(false);
+
     today = new Date();
 
     readonly user = computed(() => this.authStore.currentUser());
@@ -40,6 +44,11 @@ export class DashboardShell {
     // --- AHORA CONSUMIMOS EL SERVICIO ---
     readonly groups = this.navigationService.navGroups;
 
+    userMenuOptions = [
+        { label: 'Mi perfil', icon: 'person', routerLink: '/dashboard/profile' },
+        { label: 'Configuración', icon: 'settings', routerLink: '/dashboard/settings' },
+    ];
+
     constructor() {
         this.currentUrl.set(this.router.url);
 
@@ -47,6 +56,8 @@ export class DashboardShell {
             .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
             .subscribe((e: NavigationEnd) => {
                 this.currentUrl.set(e.urlAfterRedirects);
+                this.isUserMenuOpen.set(false); // cierra el dropdown tras navegar
+
                 // En móvil, cierra el sidebar después de navegar
                 if (!this.isDesktop()) {
                     this.sidebarOpen.set(false);
@@ -72,6 +83,39 @@ export class DashboardShell {
         this.flyoutGroup.set(null);
     }
 
+    // NOTE TOGGLES: ------------------------------
+    // --- NUEVO MÉTODO PARA TOGGLE DEL MENÚ DE USUARIO ---
+    // toggleUserMenu() {
+    //     this.isUserMenuOpen.update((open) => !open);
+    // }
+
+    // --- NUEVO MÉTODO PARA CERRAR EL MENÚ AL HACER CLIC FUERA ---
+    // @HostListener('document:click', ['$event'])
+    // onDocumentClick(event: MouseEvent) {
+    //     const target = event.target as HTMLElement;
+    //     if (this.isUserMenuOpen() && !target.closest('.user-menu-container')) {
+    //         this.isUserMenuOpen.set(false);
+    //     }
+    // }
+
+    // TODO: más adelante-  Opcional: navegación a perfil
+    // onProfile() {
+    //     this.router.navigate(['/dashboard/profile']); // placeholder
+    // }
+
+    // TODO: más adelante - menú de usuario en el HTML
+    // <div class="py-1">
+    //     <button
+    //         class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100 transition-colors"
+    //         (click)="onProfile(); isUserMenuOpen.set(false)"
+    //     >
+    //         <span class="material-icons text-base">account_circle</span>
+    //         <span>Mi perfil</span>
+    //     </button>
+    //     <!-- espacio para más opciones -->
+    // </div>
+
+    // --- MÉTODO TOGGLE PARA EL SIDEBAR ---
     toggleSidebar() {
         this.sidebarOpen.set(!this.sidebarOpen());
         // Si el usuario cierra el sidebar, también cerramos el flyout/acordeón
@@ -112,7 +156,7 @@ export class DashboardShell {
             this.sidebarOpen.set(false);
             this.flyoutGroup.set(null);
         }
-    }    
+    }
 
     homeLinkSegments(): string[] {
         return this.isAnalyst() ? ['/dashboard/analyst/home'] : ['/dashboard/client/home'];

@@ -1,61 +1,62 @@
-<!-- 1. Contenedor que centra y limita el ancho -->
-<div class="page-container">
-    <!-- 2. Contenedor con fondo blanco y estilos de tarjeta -->
-    <div class="content-wrapper">
-        <div class="max-w-6xl mx-auto space-y-6">
-            <!-- Título -->
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                <div>
-                    <h2 class="text-xl font-semibold text-slate-800">Simulador de Plan de Pagos</h2>
-                    <p class="text-sm text-slate-500">
-                        Calcula las cuotas de un crédito según el monto, plazo y tasa de interés.
-                    </p>
-                </div>
-                <div class="flex justify-end mt-2 md:mt-0">
-                    <app-back-button label="Volver" mode="history"></app-back-button>
-                </div>
+<app-page-container>
+    <div class="max-w-6xl mx-auto space-y-6">
+        <!-- Título -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <div>
+                <h2 class="text-xl font-semibold text-slate-800">Simulador de Plan de Pagos</h2>
+                <p class="text-sm text-slate-500">
+                    Calcula las cuotas de un crédito según el monto, plazo y tasa de interés.
+                </p>
             </div>
+            <div class="flex justify-end mt-2 md:mt-0">
+                <app-back-button label="Volver" mode="history"></app-back-button>
+            </div>
+        </div>
 
-            <!-- Formulario de simulación -->
-            <div class="bg-white border border-slate-200 rounded-xl p-4">
-                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <!-- Formulario de simulación -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4">
+            <form
+                [formGroup]="form"
+                (ngSubmit)="onSubmit()"
+                class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end"
+            >
                 <!-- Monto -->
                 <div class="space-y-1">
                     <label for="amount" class="block text-sm font-medium text-slate-700">
-                    Monto a solicitar
+                        Monto a solicitar
                     </label>
                     <input
-                    id="amount"
-                    type="number"
-                    formControlName="amount"
-                    class="w-full px-3 py-2 rounded-md border text-sm outline-none border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        id="amount"
+                        type="number"
+                        formControlName="amount"
+                        class="w-full px-3 py-2 rounded-md border text-sm outline-none border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                 </div>
 
                 <!-- Plazo -->
                 <div class="space-y-1">
                     <label for="termMonths" class="block text-sm font-medium text-slate-700">
-                    Plazo (meses)
+                        Plazo (meses)
                     </label>
                     <input
-                    id="termMonths"
-                    type="number"
-                    formControlName="termMonths"
-                    class="w-full px-3 py-2 rounded-md border text-sm outline-none border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        id="termMonths"
+                        type="number"
+                        formControlName="termMonths"
+                        class="w-full px-3 py-2 rounded-md border text-sm outline-none border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                 </div>
 
                 <!-- Tasa -->
                 <div class="space-y-1">
                     <label for="annualRate" class="block text-sm font-medium text-slate-700">
-                    Tasa Anual (ej: 0.18)
+                        Tasa Anual (ej: 0.18)
                     </label>
                     <input
-                    id="annualRate"
-                    type="number"
-                    step="0.01"
-                    formControlName="annualRate"
-                    class="w-full px-3 py-2 rounded-md border text-sm outline-none border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        id="annualRate"
+                        type="number"
+                        step="0.01"
+                        formControlName="annualRate"
+                        class="w-full px-3 py-2 rounded-md border text-sm outline-none border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                 </div>
 
@@ -66,86 +67,125 @@
                     class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                 >
                     @if (!isLoading()) {
-                    <span>Simular</span>
+                        <span>Simular</span>
                     } @else {
-                    <span class="h-4 w-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin"></span>
-                    <span>Calculando...</span>
+                        <span
+                            class="h-4 w-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin"
+                        ></span>
+                        <span>Calculando...</span>
                     }
                 </button>
-                </form>
-            </div>
+            </form>
+        </div>
 
-            <!-- Mensaje de error -->
-            @if (errorMessage()) {
-                <div class="rounded-md bg-rose-50 border border-rose-200 px-3 py-2 text-sm text-rose-700">
+        <!-- Mensaje de error -->
+        @if (errorMessage()) {
+            <div
+                class="rounded-md bg-rose-50 border border-rose-200 px-3 py-2 text-sm text-rose-700"
+            >
                 {{ errorMessage() }}
-                </div>
-            }
+            </div>
+        }
 
-            <!-- Resultados de la simulación -->
-            @if (schedule().length > 0) {
-                <div class="space-y-4">
-                    <!-- Resumen de totales y botón de reinicio -->
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-4 bg-white border border-slate-200 rounded-xl">
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+        <!-- Resultados de la simulación -->
+        @if (schedule().length > 0) {
+            <div class="space-y-4">
+                <!-- Resumen de totales y botón de reinicio -->
+                <div
+                    class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-4 bg-white border border-slate-200 rounded-xl"
+                >
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                         <div>
                             <p class="text-slate-500">Cuota mensual aprox.</p>
                             <p class="font-semibold text-lg text-indigo-700">
-                            {{ schedule()[0].total | currency:'COP':'symbol-narrow':'1.0-0' }}
+                                {{
+                                    schedule()[0].total
+                                        | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+                                }}
                             </p>
                         </div>
                         <div>
                             <p class="text-slate-500">Total a pagar</p>
                             <p class="font-semibold text-slate-800">
-                            {{ totalPayment | currency:'COP':'symbol-narrow':'1.0-0' }}
+                                {{ totalPayment | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
                             </p>
                         </div>
                         <div>
                             <p class="text-slate-500">Total intereses</p>
                             <p class="font-semibold text-slate-800">
-                            {{ totalInterest | currency:'COP':'symbol-narrow':'1.0-0' }}
+                                {{ totalInterest | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
                             </p>
                         </div>
-                        </div>
-                        
-                        <!-- Botón para reiniciar la simulación -->
-                        <button 
-                        type="button" 
-                        (click)="resetSimulation()"
-                        class="inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 border border-slate-300 hover:bg-slate-100"
-                        >
-                        <span>🔄</span>
-                        Nueva simulación
-                        </button>
                     </div>
 
-                    <!-- Tabla de amortización -->
-                    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
-                        <table class="min-w-full text-sm">
+                    <!-- Botón para reiniciar la simulación -->
+                    <button
+                        type="button"
+                        (click)="resetSimulation()"
+                        class="inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 border border-slate-300 hover:bg-slate-100"
+                    >
+                        <span>🔄</span>
+                        Nueva simulación
+                    </button>
+                </div>
+
+                <!-- Tabla de amortización -->
+                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <table class="min-w-full text-sm">
                         <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
-                            <th class="px-4 py-2 text-left font-medium text-slate-600"># Cuota</th>
-                            <th class="px-4 py-2 text-right font-medium text-slate-600">Capital</th>
-                            <th class="px-4 py-2 text-right font-medium text-slate-600">Interés</th>
-                            <th class="px-4 py-2 text-right font-medium text-slate-600">Total Cuota</th>
-                            <th class="px-4 py-2 text-right font-medium text-slate-600">Saldo</th>
+                                <th class="px-4 py-2 text-left font-medium text-slate-600">
+                                    # Cuota
+                                </th>
+                                <th class="px-4 py-2 text-right font-medium text-slate-600">
+                                    Capital
+                                </th>
+                                <th class="px-4 py-2 text-right font-medium text-slate-600">
+                                    Interés
+                                </th>
+                                <th class="px-4 py-2 text-right font-medium text-slate-600">
+                                    Total Cuota
+                                </th>
+                                <th class="px-4 py-2 text-right font-medium text-slate-600">
+                                    Saldo
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             @for (item of schedule(); track item.installmentNumber) {
-                            <tr class="hover:bg-slate-50/50">
-                                <td class="px-4 py-2 text-slate-700">{{ item.installmentNumber }}</td>
-                                <td class="px-4 py-2 text-right text-slate-800">{{ item.principal | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
-                                <td class="px-4 py-2 text-right text-slate-800">{{ item.interest | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
-                                <td class="px-4 py-2 text-right font-semibold text-slate-900">{{ item.total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
-                                <td class="px-4 py-2 text-right text-slate-700">{{ item.remainingBalance | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
-                            </tr>
+                                <tr class="hover:bg-slate-50/50">
+                                    <td class="px-4 py-2 text-slate-700">
+                                        {{ item.installmentNumber }}
+                                    </td>
+                                    <td class="px-4 py-2 text-right text-slate-800">
+                                        {{
+                                            item.principal
+                                                | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+                                        }}
+                                    </td>
+                                    <td class="px-4 py-2 text-right text-slate-800">
+                                        {{
+                                            item.interest
+                                                | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+                                        }}
+                                    </td>
+                                    <td class="px-4 py-2 text-right font-semibold text-slate-900">
+                                        {{
+                                            item.total | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+                                        }}
+                                    </td>
+                                    <td class="px-4 py-2 text-right text-slate-700">
+                                        {{
+                                            item.remainingBalance
+                                                | currency: 'COP' : 'symbol-narrow' : '1.0-0'
+                                        }}
+                                    </td>
+                                </tr>
                             }
                         </tbody>
-                        </table>
-                    </div>
+                    </table>
                 </div>
-            }
-        </div>
+            </div>
+        }
     </div>
-</div>
+</app-page-container>

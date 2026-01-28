@@ -1,12 +1,7 @@
-<!-- 1. Contenedor que centra y limita el ancho -->
-<div class="page-container">
-    <!-- 2. Contenedor con fondo blanco y estilos de tarjeta -->
-    <div class="content-wrapper">
-        <div class="max-w-6xl mx-auto space-y-4">
-
+<app-page-container>
+    <div class="max-w-6xl mx-auto space-y-4">
         <!-- Título y acciones -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                 <div>
                     <h2 class="text-xl font-semibold text-slate-800">Mis solicitudes de crédito</h2>
@@ -22,75 +17,79 @@
 
         <!-- Loader -->
         @if (isLoading()) {
-            <div class="mt-4 rounded-xl border border-slate-200 bg-white p-6 flex items-center gap-3 text-sm text-slate-500">
-            <span
-                class="h-4 w-4 border-2 border-slate-300 border-t-transparent rounded-full animate-spin"
-            ></span>
-            Cargando tus solicitudes...
+            <div
+                class="mt-4 rounded-xl border border-slate-200 bg-white p-6 flex items-center gap-3 text-sm text-slate-500"
+            >
+                <span
+                    class="h-4 w-4 border-2 border-slate-300 border-t-transparent rounded-full animate-spin"
+                ></span>
+                Cargando tus solicitudes...
             </div>
         }
 
         <!-- Error -->
         @if (!isLoading() && errorMessage()) {
-            <div class="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 flex items-start gap-2">
-            <span class="mt-0.5">⚠️</span>
-            <p>{{ errorMessage() }}</p>
+            <div
+                class="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 flex items-start gap-2"
+            >
+                <span class="mt-0.5">⚠️</span>
+                <p>{{ errorMessage() }}</p>
             </div>
         }
 
         <!-- Estado vacío -->
         @if (!isLoading() && !errorMessage() && credits().length === 0) {
-            <div class="mt-4 rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500">
-            Aún no tienes solicitudes registradas.
-            <span class="block mt-1">
-                Cuando crees tu primera solicitud, aparecerá aquí con su estado actualizado.
-            </span>
+            <div
+                class="mt-4 rounded-xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-500"
+            >
+                Aún no tienes solicitudes registradas.
+                <span class="block mt-1">
+                    Cuando crees tu primera solicitud, aparecerá aquí con su estado actualizado.
+                </span>
             </div>
         }
 
         <!-- Tabla de créditos -->
         @if (!isLoading() && !errorMessage() && credits().length > 0) {
             <div class="mt-4 rounded-xl border border-slate-200 bg-white overflow-hidden">
-            <table class="min-w-full text-sm">
-                <thead class="bg-slate-50 border-b border-slate-200">
-                <tr>
-                    <th class="px-4 py-2 text-left font-medium text-slate-600">Fecha</th>
-                    <th class="px-4 py-2 text-left font-medium text-slate-600">Monto</th>
-                    <th class="px-4 py-2 text-left font-medium text-slate-600">Producto</th>
-                    <th class="px-4 py-2 text-left font-medium text-slate-600">Moneda</th>
-                    <th class="px-4 py-2 text-left font-medium text-slate-600">Estado</th>
-                </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                @for (credit of credits(); track credit.id) {
-                    <tr class="hover:bg-slate-50/50">
-                    <td class="px-4 py-2 text-slate-700">
-                        {{ credit.createdAt | date:'shortDate' }}
-                    </td>
-                    <td class="px-4 py-2 text-slate-800">
-                        {{ credit.amount | number:'1.0-0' }}
-                    </td>
-                    <td class="px-4 py-2 text-slate-700">
-                        {{ credit.creditProductName }}
-                    </td>
-                    <td class="px-4 py-2 text-slate-700">
-                        {{ credit.currencyCode }}
-                    </td>
-                    <td class="px-4 py-2">
-                        <span
-                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
-                        [ngClass]="statusClasses(credit.status)"
-                        >
-                        {{ statusLabel(credit.status) }}
-                        </span>
-                    </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+                <table class="min-w-full text-sm">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-4 py-2 text-left font-medium text-slate-600">Fecha</th>
+                            <th class="px-4 py-2 text-left font-medium text-slate-600">Monto</th>
+                            <th class="px-4 py-2 text-left font-medium text-slate-600">Producto</th>
+                            <th class="px-4 py-2 text-left font-medium text-slate-600">Moneda</th>
+                            <th class="px-4 py-2 text-left font-medium text-slate-600">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @for (credit of credits(); track credit.id) {
+                            <tr class="hover:bg-slate-50/50">
+                                <td class="px-4 py-2 text-slate-700">
+                                    {{ credit.createdAt | date: 'shortDate' }}
+                                </td>
+                                <td class="px-4 py-2 text-slate-800">
+                                    {{ credit.amount | number: '1.0-0' }}
+                                </td>
+                                <td class="px-4 py-2 text-slate-700">
+                                    {{ credit.creditProductName }}
+                                </td>
+                                <td class="px-4 py-2 text-slate-700">
+                                    {{ credit.currencyCode }}
+                                </td>
+                                <td class="px-4 py-2">
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                                        [ngClass]="statusClasses(credit.status)"
+                                    >
+                                        {{ statusLabel(credit.status) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         }
-        </div>
     </div>
-</div>
-
+</app-page-container>

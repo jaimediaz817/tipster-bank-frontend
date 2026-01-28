@@ -1,0 +1,13 @@
+<!--
+  Este es nuestro contenedor de página estándar.
+  Define el fondo, bordes, sombras y padding interno.
+  El contenido de la página se proyectará dentro de <ng-content>.
+-->
+<div class="page-container rounded-xl border border-slate-200 shadow-sm">
+    <!-- 1. Contenedor que centra y limita el ancho -->
+
+    <!-- 2. Contenedor con fondo blanco y estilos de tarjeta -->
+    <div class="content-wrapper p-4 sm:p-6">
+        <ng-content></ng-content>
+    </div>
+</div>

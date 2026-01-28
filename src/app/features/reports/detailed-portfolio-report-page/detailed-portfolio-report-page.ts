@@ -6,96 +6,114 @@ import { ExportService } from '../../../core/services/export.service'; // <--- L
 import { ToastStore } from '../../../core/state/toast.store';
 import { ReportsService } from '../../../core/services/reports';
 import { BackButton } from '../../shared/back-button/back-button';
+import { PageContainer } from '../../shared/pages-tools/page-container/page-container';
 
 @Component({
-  selector: 'app-detailed-portfolio-report-page',
-  standalone: true,
-  imports: [CommonModule, BackButton],
-  templateUrl: './detailed-portfolio-report-page.html',
+    selector: 'app-detailed-portfolio-report-page',
+    standalone: true,
+    imports: [CommonModule, BackButton, PageContainer],
+    templateUrl: './detailed-portfolio-report-page.html',
 })
 export class DetailedPortfolioReportPage implements OnInit {
-  private reportsService = inject(ReportsService);
-  private exportService = inject(ExportService); // <--- Inyectado
-  private toastStore = inject(ToastStore); // <--- Inyectado
+    private reportsService = inject(ReportsService);
+    private exportService = inject(ExportService); // <--- Inyectado
+    private toastStore = inject(ToastStore); // <--- Inyectado
 
-  isLoading = signal<boolean>(true);
-  reportData = signal<DetailedPortfolioReport[]>([]);
-  errorMessage = signal<string | null>(null);
+    isLoading = signal<boolean>(true);
+    reportData = signal<DetailedPortfolioReport[]>([]);
+    errorMessage = signal<string | null>(null);
 
-  ngOnInit(): void {
-    this.loadReport();
-  }
+    ngOnInit(): void {
+        this.loadReport();
+    }
 
-  loadReport(): void {
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
-    this.reportsService.getDetailedPortfolioReport().subscribe({
-      next: (data) => {
-        this.reportData.set(data);
-        this.isLoading.set(false);
+    loadReport(): void {
+        this.isLoading.set(true);
+        this.errorMessage.set(null);
+        this.reportsService.getDetailedPortfolioReport().subscribe({
+            next: (data) => {
+                this.reportData.set(data);
+                this.isLoading.set(false);
+                if (data.length === 0) {
+                    this.toastStore.info('No se encontraron datos para este reporte.');
+                }
+            },
+            error: (err) => {
+                console.error('Error fetching detailed portfolio report:', err);
+                this.errorMessage.set(
+                    'No se pudo cargar el reporte. Por favor, inténtalo de nuevo más tarde.',
+                );
+                this.isLoading.set(false);
+                this.toastStore.error(this.errorMessage()!);
+            },
+        });
+    }
+
+    exportToExcel(): void {
+        const data = this.reportData();
         if (data.length === 0) {
-          this.toastStore.info('No se encontraron datos para este reporte.');
+            this.toastStore.warning('No hay datos para exportar.');
+            return;
         }
-      },
-      error: (err) => {
-        console.error('Error fetching detailed portfolio report:', err);
-        this.errorMessage.set(
-          'No se pudo cargar el reporte. Por favor, inténtalo de nuevo más tarde.'
+
+        const headers = [
+            'ID Solicitud',
+            'ID Cliente',
+            'Nombre Cliente',
+            'Email',
+            'Producto',
+            'Moneda',
+            'Monto',
+            'Plazo (Meses)',
+            'Estado',
+            'Fecha Creación',
+            'Fuente Ingresos',
+            'Comentarios Analista',
+        ];
+
+        const body = data.map((row) => [
+            row.applicationId,
+            row.clientId,
+            row.clientFullName,
+            row.clientEmail,
+            row.productName,
+            row.currencyCode,
+            row.amount,
+            row.termMonths,
+            row.status,
+            new Date(row.createdAt).toLocaleDateString(),
+            row.incomeSource,
+            row.analystComments ?? 'N/A',
+        ]);
+
+        this.exportService.exportToExcel(body, headers, 'Reporte_Detallado_Cartera');
+        this.toastStore.success('Reporte exportado a Excel con éxito.');
+    }
+
+    exportToPdf(): void {
+        const data = this.reportData();
+        if (data.length === 0) {
+            this.toastStore.warning('No hay datos para exportar.');
+            return;
+        }
+
+        const head = [['ID', 'Cliente', 'Producto', 'Monto', 'Plazo', 'Estado']];
+
+        const body = data.map((row) => [
+            row.applicationId,
+            row.clientFullName,
+            row.productName,
+            this.exportService.formatCurrency(row.amount),
+            `${row.termMonths} meses`,
+            row.status,
+        ]);
+
+        this.exportService.exportToPdf(
+            'Reporte Detallado de Cartera', // Título del reporte
+            head,
+            body,
+            'reporte_detallado_cartera', // Nombre del archivo
         );
-        this.isLoading.set(false);
-        this.toastStore.error(this.errorMessage()!);
-      },
-    });
-  }
-
-  exportToExcel(): void {
-    const data = this.reportData();
-    if (data.length === 0) {
-      this.toastStore.warning('No hay datos para exportar.');
-      return;
+        this.toastStore.success('Reporte exportado a PDF con éxito.');
     }
-
-    const headers = [
-      'ID Solicitud', 'ID Cliente', 'Nombre Cliente', 'Email', 'Producto',
-      'Moneda', 'Monto', 'Plazo (Meses)', 'Estado', 'Fecha Creación',
-      'Fuente Ingresos', 'Comentarios Analista'
-    ];
-
-    const body = data.map(row => [
-      row.applicationId, row.clientId, row.clientFullName, row.clientEmail, row.productName,
-      row.currencyCode, row.amount, row.termMonths, row.status,
-      new Date(row.createdAt).toLocaleDateString(),
-      row.incomeSource, row.analystComments ?? 'N/A'
-    ]);
-
-    this.exportService.exportToExcel(body, headers, 'Reporte_Detallado_Cartera');
-    this.toastStore.success('Reporte exportado a Excel con éxito.');
-  }
-
-  exportToPdf(): void {
-    const data = this.reportData();
-    if (data.length === 0) {
-      this.toastStore.warning('No hay datos para exportar.');
-      return;
-    }
-
-    const head = [['ID', 'Cliente', 'Producto', 'Monto', 'Plazo', 'Estado']];
-
-    const body = data.map(row => [
-      row.applicationId,
-      row.clientFullName,
-      row.productName,
-      this.exportService.formatCurrency(row.amount),
-      `${row.termMonths} meses`,
-      row.status
-    ]);
-
-    this.exportService.exportToPdf(
-      'Reporte Detallado de Cartera', // Título del reporte
-      head,
-      body,
-      'reporte_detallado_cartera' // Nombre del archivo
-    );
-    this.toastStore.success('Reporte exportado a PDF con éxito.');
-  }
 }

@@ -49,6 +49,7 @@ export class AuthStore {
       email: response.email,
       fullName: response.fullName,
       roles: response.roles,
+      avatarUrl: '', // TODO: agregar al backend si es necesario
     };
 
     this._state.set({

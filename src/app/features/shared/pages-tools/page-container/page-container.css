@@ -1,0 +1,11 @@
+/* Contenedor principal para el contenido de las páginas */
+.page-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6;
+  background-color: #f5f5f5; /* #f5f5f5; fcfcf8*/
+}
+
+/* Contenedor con fondo, borde y sombra para un efecto "card" */
+.content-wrapper {
+  @apply p-6;
+  border: 1px solid #e5e7eb; /* borde gris muy tenue */
+}

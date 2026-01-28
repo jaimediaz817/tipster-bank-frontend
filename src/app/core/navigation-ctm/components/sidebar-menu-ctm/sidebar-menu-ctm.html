@@ -28,7 +28,7 @@
                 <button
                     (click)="onGroupClick(group, $event)"
                     [title]="group.label"
-                    class="w-full flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150 hover:bg-slate-700"
+                    class="sidebar-item-agrupation-ctm w-full flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150 hover:bg-slate-700"
                     [ngClass]="{
                         'bg-slate-700': flyoutGroup?.id === group.id,
                         'bg-indigo-600 text-white': flyoutGroup?.id !== group.id && activeGroupByUrl === group
@@ -76,7 +76,7 @@
         <button
             (click)="onLogoutClick()"
             title="Cerrar sesión"
-            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors text-slate-300 hover:bg-red-500/80 hover:text-white"
+            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-rose-400 hover:to-pink-500 hover:shadow-lg"
         >
             <span class="material-symbols-outlined text-xl">logout</span>
             @if (sidebarOpen || !isDesktop) {

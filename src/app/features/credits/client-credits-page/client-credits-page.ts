@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { CreditsService } from '../../../core/services/credits.service';
 import { CreditApplication, CreditStatus } from '../../../core/models/credit.models';
 import { BackButton } from '../../shared/back-button/back-button';
+import { PageContainer } from '../../shared/pages-tools/page-container/page-container';
 
 @Component({
   selector: 'app-client-credits-page',
   standalone: true,
-  imports: [CommonModule, BackButton],
+  imports: [CommonModule, BackButton, PageContainer],
   templateUrl: './client-credits-page.html',
   styleUrls: ['./client-credits-page.css'],
 })

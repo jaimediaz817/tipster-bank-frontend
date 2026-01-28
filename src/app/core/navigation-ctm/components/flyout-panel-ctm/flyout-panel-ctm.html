@@ -1,9 +1,5 @@
 <!-- Overlay para cerrar al hacer clic fuera -->
-<div
-    (click)="onClose()"
-    class="sidebar-overlay"
-    [class.sidebar-open]="sidebarOpen"
-></div>
+<div (click)="onClose()" class="sidebar-overlay" [class.sidebar-open]="sidebarOpen"></div>
 
 <div class="sidebar-flyout" [class.sidebar-open]="sidebarOpen">
     <!-- Encabezado del panel -->
@@ -16,7 +12,7 @@
 
     <!-- Contenido del panel (enlaces) -->
     <div class="panel-content">
-        <nav class="links">
+        <nav class="links flyout-links-grid">
             @for (link of group.links; track link.routerLink) {
                 <a
                     [routerLink]="link.routerLink"
@@ -25,11 +21,15 @@
                     class="link-item"
                     (click)="onClose()"
                 >
-                    <span class="material-symbols-outlined icon">{{ link.icon }}</span>
-                    <span class="flex-1">{{ link.label }}</span>
-                    @if (link.isNew) {
-                        <span class="new-badge">Nuevo</span>
-                    }
+                    <div class="link-header">
+                        <span class="material-symbols-outlined icon">{{ link.icon }}</span>
+                        @if (link.isNew) {
+                            <span class="new-badge">Nuevo</span>
+                        }
+                    </div>
+                    <div class="link-body">
+                        <span class="link-title">{{ link.label }}</span>
+                    </div>
                 </a>
             }
         </nav>

@@ -1,3 +1,12 @@
+.sidebar-item-agrupation-ctm {}
+
+.sidebar-item-agrupation-ctm .item-agrupation-active-ctm {
+    background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+    color: #fff !important;
+    box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.08);
+    transition: background 0.18s, color 0.18s;
+}
+
 /*
 * Estilos para el Sidebar en Móvil (< 768px)
 * Hacemos que el sidebar no ocupe toda la pantalla para una mejor UX.

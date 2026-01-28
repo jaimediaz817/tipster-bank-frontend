@@ -45,6 +45,7 @@ export interface NavLink {
   routerLink: string;
   icon: string; // Icono de Material Symbols (ej: 'add_circle')
   isNew?: boolean; // Etiqueta opcional "Nuevo"
+  children?: NavLink[]; // <-- hijos navegables
 }
 
 export interface NavGroup {

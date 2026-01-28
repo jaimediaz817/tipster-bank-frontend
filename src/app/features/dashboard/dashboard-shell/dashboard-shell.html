@@ -1,8 +1,8 @@
 <div class="min-h-screen flex flex-col bg-slate-50">
     <!-- Header superior -->
     <header
-        class="h-20 px-4 md:px-8 flex items-center justify-between border-b border-slate-200 fixed top-0 left-0 right-0 bg-white z-50"
-        style="background-color: #282f3a"
+        class="h-18 px-4 md:px-8 flex items-center justify-between border-slate-200 fixed top-0 left-0 right-0 z-50"
+        style="background: linear-gradient(180deg, #282f3a 0%, #334155 100%)"
     >
         <div class="flex items-center gap-2">
             <!-- <button (click)="toggleSidebar()" class="text-white p-2 rounded-md hover:bg-slate-700">
@@ -28,56 +28,36 @@
                 </div>
             </div>
         </div>
+
         <div class="flex items-center gap-2"></div>
-        <!-- Zona derecha del header (dashboard-shell.html) -->
-        <div
-            class="flex items-center gap-3 px-3 py-1 rounded-full bg-white/80 border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer max-w-xs sm:max-w-none"
-            style="backdrop-filter: blur(2px)"
-        >
-            <span
-                class="material-icons text-indigo-600 bg-indigo-100 rounded-full border border-indigo-200 p-1 text-lg"
-                >person</span
-            >
-            <div class="flex flex-col leading-tight min-w-0">
-                <span
-                    class="text-sm font-semibold text-slate-800 truncate max-w-[120px] sm:max-w-none"
-                >
-                    {{ user()?.fullName ?? 'Usuario' }}
-                </span>
-                <span class="text-xs text-slate-500 truncate">
-                    {{
-                        user()?.roles?.[0] === 'ROLE_ANALISTA'
-                            ? 'Analista'
-                            : user()?.roles?.[0] === 'ROLE_ADMIN'
-                              ? 'Admin'
-                              : 'Cliente'
-                    }}
-                </span>
-            </div>
-            <button
-                class="logout-btn flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium text-slate-500 hover:bg-red-50 hover:text-red-600 border border-transparent hover:border-red-200 transition"
-                (click)="logout()"
-                aria-label="Cerrar sesión"
-            >
-                <span class="material-icons text-base">logout</span>
-                <span class="hidden sm:inline">Salir</span>
-            </button>
+
+        <!-- Añadimos 'relative' y un ID para el HostListener -->
+        <!-- ...existing code... -->
+        <div class="relative user-menu-container">
+            <app-user-menu
+                [userName]="user()?.fullName ?? ''"
+                [userEmail]="user()?.email ?? ''"
+                [avatarUrl]="user()?.avatarUrl"
+                [options]="userMenuOptions"
+                [menuOpen]="isUserMenuOpen()"
+                (menuOpenChange)="isUserMenuOpen.set($event)"
+                (logout)="logout()"
+            ></app-user-menu>
         </div>
     </header>
 
     <!-- Cuerpo: sidebar + contenido -->
     <div class="flex flex-1 pt-20">
-
-   
         <!-- Contenedor del Sidebar -->
         <!-- En DESKTOP: es visible y empuja el contenido. -->
         <!-- En MÓVIL: está oculto por defecto y se superpone (drawer). -->
+
         <div
             id="app-sidebar-wrapper"
-            class="fixed top-20 bottom-0 left-0 z-40 transition-transform duration-300 ease-in-out md:block"
+            class="fixed top-18 bottom-0 left-0 z-40 bg-gradient-to-b from-[#212529] to-[#334155] shadow-xl transition-transform duration-500 ease-in-out will-change-transform md:block backdrop-blur-sm"
             [ngClass]="{
                 'translate-x-0': sidebarOpen() || isDesktop(),
-                '-translate-x-full': !sidebarOpen() && !isDesktop()
+                '-translate-x-full': !sidebarOpen() && !isDesktop(),
             }"
         >
             <app-sidebar-menu-ctm
@@ -106,14 +86,17 @@
 
         <!-- Contenido Principal con padding dinámico -->
         <main
-            class="h-full overflow-y-auto py-6 transition-all duration-300 ease-in-out"
+            class="w-full h-full overflow-y-auto py-6 transition-all duration-300 ease-in-out"
             [ngStyle]="{
-                'padding-left': isDesktop() ? (sidebarOpen() ? '18rem' : '5rem') : '0',
+                'padding-left': isDesktop() ? (sidebarOpen() ? '18rem' : '2.5rem') : '0',
                 'padding-top': '1rem',
             }"
         >
-            <!--  TODO: PADING EN EL CONTENIDO CONCRETO sm:px-6 md:px-8 -->
-            <div class="max-w-7xl mx-auto w-full px-4">
+            <!-- 
+              Este div ahora solo centra el contenido y da el padding exterior.
+              El fondo blanco y padding interior lo dará el PageContainerComponent.
+            -->
+            <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
                 <div class="breadcrumbs-container">
                     <app-breadcrumbs></app-breadcrumbs>
                 </div>

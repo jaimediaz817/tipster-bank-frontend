@@ -6,12 +6,18 @@ import { CreditsService } from '../../../core/services/credits.service';
 import { CreditsSummary } from '../../../core/models/credits-summary.models';
 import { AuthStore } from '../../../core/state/auth.store';
 import { UserRole } from '../../../core/models/auth.models';
+import { PageContainer } from '../../shared/pages-tools/page-container/page-container';
 
 @Component({
   selector: 'app-dashboard-home-page',
   standalone: true,
   // Importamos los componentes de los gráficos
-  imports: [CommonModule, StatusDonutChart, StatusAmountBarChart],
+  imports: [
+    CommonModule,
+    StatusDonutChart,
+    StatusAmountBarChart,
+    PageContainer,
+],
   // Usamos el nuevo archivo HTML
   templateUrl: './dashboard-home-page.html',
 })
