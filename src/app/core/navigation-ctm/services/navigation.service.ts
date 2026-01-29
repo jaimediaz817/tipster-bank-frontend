@@ -27,8 +27,20 @@ export class NavigationService {
                 },
                 {
                     label: 'Nueva Solicitud',
-                    routerLink: '/dashboard/client/my-credits/new',
+                    // routerLink: '/dashboard/client/my-credits/new',
                     icon: 'add_circle',
+                    links: [
+                        {
+                            label: 'Crédito Financiero Hogar',
+                            routerLink: '/dashboard/client/my-credits/new',
+                            icon: 'home',
+                        },
+                        {
+                            label: 'Crédito Financiero Empresarial',
+                            routerLink: '/dashboard/client/my-credits/new/enterprise',
+                            icon: 'business',
+                        },
+                    ],
                 },
             ],
         },
@@ -103,6 +115,4 @@ export class NavigationService {
 
         return [];
     });
-
-    
 }

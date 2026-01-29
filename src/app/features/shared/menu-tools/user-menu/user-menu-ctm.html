@@ -15,12 +15,12 @@
             />
         } @else {
             <span
-                class="w-9 h-9 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-lg"
+                class="w-9 h-9 rounded-full bg-indigo-500 text-white flex items-center justify-center text-lg"
             >
                 {{ userName ? userName[0] : '?' }}
             </span>
         }
-        <span class="hidden md:block text-sm font-semibold text-white">{{ userName }}</span>
+        <span class="hidden md:block text-sm text-xs font-semibold text-white">{{ userName }}</span>
         <span
             class="material-symbols-outlined text-white transition-transform duration-200"
             [ngClass]="{ 'rotate-180': menuOpen }"
@@ -40,16 +40,16 @@
                 class="dropdown-header flex justify-between items-center px-4 py-2 border-b border-slate-100 bg-slate-50 rounded-t-xl"
             >
                 <!-- filepath: credit-platform-frontend/src/app/features/shared/menu-tools/user-menu/user-menu-ctm.html -->
-                <span class="text-sm font-medium text-slate-500 select-none"
+                <span class="text-sm font-medium text-white select-none"
                     >Opciones de mi cuenta</span
                 >
                 <button
-                    class="btn-close-dropdown-ctm icon-btn p-1 rounded-full hover:bg-slate-100 transition focus:outline-none"
+                    class="btn-close-dropdown-ctm icon-btn p-1 rounded-full hover:bg-slate-100 transition focus:outline-none group"
                     (click)="toggleMenu()"
                     aria-label="Cerrar menú"
                     type="button"
                 >
-                    <span class="material-symbols-outlined text-slate-500 text-lg">close</span>
+                    <span class="material-symbols-outlined text-white text-lg group-hover:text-slate-800">close</span>
                 </button>
             </div>
 
@@ -58,7 +58,7 @@
                 <div class="text-xs text-slate-500 truncate">{{ userEmail }}</div>
             </div>-->
 
-            <div class="user-data-container-ctm px-4 py-3 border-b border-slate-100 bg-white/80 rounded-b-lg shadow-inner">
+            <div class="user-data-container-ctm px-4 py-3 border-b border-slate-100 bg-white/80  shadow-inner">
                 <div class="font-semibold text-slate-800 text-base leading-tight mb-0.5 truncate">
                     {{ userName }}
                 </div>

@@ -42,10 +42,10 @@ export interface NavigationItem {
 // Define la estructura de los enlaces y grupos para claridad
 export interface NavLink {
   label: string;
-  routerLink: string;
+  routerLink?: string;
   icon: string; // Icono de Material Symbols (ej: 'add_circle')
   isNew?: boolean; // Etiqueta opcional "Nuevo"
-  children?: NavLink[]; // <-- hijos navegables
+  links?: NavLink[]; // <-- hijos navegables
 }
 
 export interface NavGroup {

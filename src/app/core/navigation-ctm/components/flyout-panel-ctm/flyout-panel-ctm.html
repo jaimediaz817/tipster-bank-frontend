@@ -4,17 +4,31 @@
 <div class="sidebar-flyout" [class.sidebar-open]="sidebarOpen">
     <!-- Encabezado del panel -->
     <div class="panel-header">
-        <h3 class="panel-title">{{ group.label }}</h3>
-        <button (click)="onClose()" class="icon-btn" aria-label="Cerrar panel">
-            <span class="material-symbols-outlined">close</span>
+        @if (panelStack.length > 1) {
+            <button
+                (click)="goBack()"
+                class="icon-btn flyout-back-btn"
+                aria-label="Volver"
+            >
+                <span class="material-symbols-outlined" style="color: #fff">arrow_back</span>
+            </button>
+        }
+        <h2 class="panel-title">{{ panelStack[panelStack.length - 1].title }}</h2>
+        <button 
+            (click)="onClose()"
+            class="btn-close-flyout-panel icon-btn"
+            aria-label="Cerrar panel"
+        >
+            <span class="material-symbols-outlined" style="transition: color 0.2s;">close</span>
         </button>
     </div>
 
     <!-- Contenido del panel (enlaces) -->
     <div class="panel-content">
         <nav class="links flyout-links-grid">
-            @for (link of group.links; track link.routerLink) {
+            @for (link of panelStack[panelStack.length - 1].links; track link.label) {
                 <a
+                    *ngIf="!link.links"
                     [routerLink]="link.routerLink"
                     routerLinkActive="link-item-active"
                     [routerLinkActiveOptions]="{ exact: true }"
@@ -22,7 +36,7 @@
                     (click)="onClose()"
                 >
                     <div class="link-header">
-                        <span class="material-symbols-outlined icon">{{ link.icon }}</span>
+                        <span class="link-item-icon-container material-symbols-outlined icon">{{ link.icon }}</span>
                         @if (link.isNew) {
                             <span class="new-badge">Nuevo</span>
                         }
@@ -31,6 +45,26 @@
                         <span class="link-title">{{ link.label }}</span>
                     </div>
                 </a>
+                <button
+                    *ngIf="link.links"
+                    (click)="openPanel(link)"
+                    class="link-item-container link-item"
+                    [ngClass]="{
+                        'btn-subitems-group-parent-active': hasActiveDescendant(link.links),
+                    }"
+                    type="button"
+                >
+                    <div class="link-header">
+                        <span class="link-item-icon-container material-symbols-outlined icon">{{ link.icon }}</span>
+                        @if (link.isNew) {
+                            <span class="new-badge">Nuevo</span>
+                        }
+                    </div>
+                    <div class="link-body flex justify-between items-center w-full">
+                        <span class="link-title">{{ link.label }}</span>
+                        <span class="btn-goto-next-flyout material-symbols-outlined ml-2">chevron_right</span>
+                    </div>
+                </button>
             }
         </nav>
     </div>

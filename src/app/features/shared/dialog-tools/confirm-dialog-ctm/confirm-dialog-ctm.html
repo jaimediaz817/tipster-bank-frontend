@@ -1,0 +1,81 @@
+<div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+    <h2 class="text-lg font-semibold text-gray-900">
+        {{ data.title ?? 'Confirmar acción' }}
+    </h2>
+
+    <p class="mt-2 text-sm text-gray-600">
+        {{ data.message }}
+    </p>
+
+    <ul *ngIf="data.details?.length" class="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-600">
+        <li *ngFor="let d of data.details">{{ d }}</li>
+    </ul>
+
+    <!-- Regla checkbox -->
+    <label *ngIf="data.requireCheckbox" class="mt-5 flex items-start gap-3 text-sm text-gray-700">
+        <input
+            type="checkbox"
+            class="mt-1 h-4 w-4"
+            (change)="checked.set($any($event.target).checked)"
+        />
+        <span>{{ data.requireCheckbox.label }}</span>
+    </label>
+
+    <!-- Regla escribir texto -->
+    <div *ngIf="data.requireText" class="mt-5">
+        <label class="block text-sm font-medium text-gray-700">
+            {{ data.requireText.label }}
+        </label>
+        <input
+            type="text"
+            class="mt-2 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gray-900/20"
+            [placeholder]="data.requireText.placeholder ?? data.requireText.match"
+            (input)="typed.set($any($event.target).value)"
+        />
+        <p class="mt-2 text-xs text-gray-500">
+            Debes escribir: <span class="font-semibold">{{ data.requireText.match }}</span>
+        </p>
+    </div>
+
+    <div class="mt-6 flex justify-end gap-2">
+        <button
+            type="button"
+            class="rounded-xl px-4 py-2 text-sm font-medium ring-1 ring-gray-300 hover:bg-gray-50"
+            (click)="close(false)"
+        >
+            {{ data.cancelText ?? 'Cancelar' }}
+        </button>
+        <button
+            type="button"
+            class="rounded-xl px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+            [ngClass]="[
+                data.confirmClass
+                    ? data.confirmClass
+                    : data.tone === 'danger'
+                      ? 'bg-red-600'
+                      : 'bg-gray-900',
+                data.confirmHover === 'darken' ? 'hover:brightness-90' : '',
+                data.confirmHover === 'lighten' ? 'hover:brightness-110' : '',
+                data.confirmHover === 'none' ? '' : '',
+            ]"
+            [ngStyle]="data.confirmStyle ? { background: data.confirmStyle } : null"
+            [disabled]="!canConfirm()"
+            (click)="close(true)"
+        >
+            {{ data.confirmText ?? 'Aceptar' }}
+        </button>
+        <!--<button
+            type="button"
+            class="rounded-xl px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+            [ngClass]="
+                data.tone === 'danger'
+                    ? 'bg-red-600 hover:bg-red-700'
+                    : 'bg-gray-900 hover:bg-gray-800'
+            "
+            [disabled]="!canConfirm()"
+            (click)="close(true)"
+        >
+            {{ data.confirmText ?? 'Aceptar' }}
+        </button>-->
+    </div>
+</div>

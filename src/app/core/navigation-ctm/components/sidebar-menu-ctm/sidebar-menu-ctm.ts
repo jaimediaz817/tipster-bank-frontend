@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NavGroup } from '../../models/navigation.model';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { NavGroup, NavLink } from '../../models/navigation.model';
 
 @Component({
     selector: 'app-sidebar-menu-ctm',
@@ -21,6 +21,35 @@ export class SidebarMenuCtm {
     @Output() groupClicked = new EventEmitter<{ group: NavGroup; event: MouseEvent }>();
     @Output() logoutClicked = new EventEmitter<void>();
     @Output() linkClicked = new EventEmitter<void>();
+
+    private router = inject(Router);
+    subAccordionState: { [key: string]: boolean } = {};
+
+    toggleSubAccordion(key: string) {
+        this.subAccordionState[key] = !this.subAccordionState[key];
+    }
+
+    isSubAccordionOpen(key: string): boolean {
+        return !!this.subAccordionState[key];
+    }
+
+    // Genera una clave única para cada subnivel
+    getAccordionKey(parentKey: string, link: NavLink): string {
+        return parentKey + '>' + link.label;
+    }
+
+    isActiveLink(routerLink?: string): boolean {
+        if (!routerLink) return false;
+        return this.router.isActive(routerLink, { paths: 'exact', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' });
+    }
+
+    hasActiveDescendant(links: NavLink[]): boolean {
+        for (const link of links) {
+            if (this.isActiveLink(link.routerLink)) return true;
+            if (link.links && this.hasActiveDescendant(link.links)) return true;
+        }
+        return false;
+    }    
 
     onGroupClick(group: NavGroup, event: MouseEvent): void {
         event.stopPropagation();

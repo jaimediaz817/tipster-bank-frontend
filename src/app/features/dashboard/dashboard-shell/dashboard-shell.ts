@@ -10,6 +10,7 @@ import { NavigationService } from '../../../core/navigation-ctm/services/navigat
 import { SidebarMenuCtm } from '../../../core/navigation-ctm/components/sidebar-menu-ctm/sidebar-menu-ctm';
 import { FlyoutPanelCtm } from '../../../core/navigation-ctm/components/flyout-panel-ctm/flyout-panel-ctm';
 import { UserMenuCtm } from '../../shared/menu-tools/user-menu/user-menu-ctm';
+import { ConfirmDialogService } from '../../shared/dialog-tools/confirm-dialog-ctm/confirm-dialog.service';
 
 @Component({
     selector: 'app-dashboard-shell',
@@ -49,7 +50,7 @@ export class DashboardShell {
         { label: 'Configuración', icon: 'settings', routerLink: '/dashboard/settings' },
     ];
 
-    constructor() {
+    constructor(private readonly confirm: ConfirmDialogService) {
         this.currentUrl.set(this.router.url);
 
         this.router.events
@@ -138,10 +139,14 @@ export class DashboardShell {
         const allGroups = this.groups();
         const allLinks = allGroups
             .flatMap((group) => group.links.map((link) => ({ ...link, group })))
-            .sort((a, b) => b.routerLink.length - a.routerLink.length);
+            .sort((a, b) => {
+                const aLen = typeof a.routerLink === 'string' ? a.routerLink.length : 0;
+                const bLen = typeof b.routerLink === 'string' ? b.routerLink.length : 0;
+                return bLen - aLen;
+            });
 
         for (const link of allLinks) {
-            if (url.startsWith(link.routerLink)) {
+            if (typeof link.routerLink === 'string' && url.startsWith(link.routerLink)) {
                 return link.group;
             }
         }
@@ -162,7 +167,19 @@ export class DashboardShell {
         return this.isAnalyst() ? ['/dashboard/analyst/home'] : ['/dashboard/client/home'];
     }
 
-    logout(): void {
+    async logout(): Promise<void> {
+        const confirmlogout = await this.confirm.confirm({
+            title: 'Sesión activa TipsterBank',
+            message: '¿Está seguro de cerrar la sesión ahora mismo?',
+            confirmText: 'Cerrar sesión',
+            confirmStyle: 'linear-gradient(90deg, #6366f1 0%, #818cf8 100%)', // Gradiente CSS
+            confirmHover: 'darken', // o 'lighten' o 'none'
+        });
+
+        if (!confirmlogout) {
+            return;
+        }
+
         this.authStore.logout();
         this.router.navigate(['/auth/login']);
     }

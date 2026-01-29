@@ -39,7 +39,8 @@
     margin-right: 4px;
 }
 
-.text {
-    font-weight: 600;
+.back-btn-text-content {
+    font-size: 13px;
+    font-weight: 200;
     letter-spacing: 0.02em;
 }

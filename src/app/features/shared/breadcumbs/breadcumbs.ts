@@ -14,7 +14,7 @@ import { UserRole } from '../../../core/models/auth.models';
         @if (breadcrumbs().length > 0) {
             <nav
                 aria-label="breadcrumb"
-                class="flex items-center gap-2 text-sm font-medium text-slate-500 bg-white/80 border border-slate-100 rounded-lg px-4 py-2 shadow-sm backdrop-blur-sm mb-4"
+                class="flex items-center gap-2 text-xs text-mdtw font-medium text-slate-500 bg-white/80 border border-slate-100 rounded-lg px-4 py-1 shadow-sm backdrop-blur-sm mb-3"
             >
                 <!-- Enlace a Home -->
                 <a

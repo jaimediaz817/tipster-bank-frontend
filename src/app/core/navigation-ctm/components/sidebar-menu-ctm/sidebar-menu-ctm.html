@@ -1,8 +1,9 @@
 <aside
     class="asidebar-menu-ctm-container h-full flex flex-col justify-between transition-all duration-300 ease-in-out text-white"
     [ngClass]="{
-        'w-72': sidebarOpen || !isDesktop,
-        'w-18': !sidebarOpen && isDesktop
+        'w-[95vw]': !isDesktop,
+        'w-72': sidebarOpen && isDesktop,
+        'w-18': !sidebarOpen && isDesktop,
     }"
     style="background: linear-gradient(180deg, #212529 0%, #334155 100%)"
 >
@@ -12,7 +13,7 @@
             [routerLink]="homeLinkSegments"
             routerLinkActive="bg-indigo-600 text-white"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150 hover:bg-slate-700"
+            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-xs font-medium transition-colors duration-150 hover:bg-slate-700"
             title="Inicio"
             (click)="onLinkClick()"
         >
@@ -28,10 +29,11 @@
                 <button
                     (click)="onGroupClick(group, $event)"
                     [title]="group.label"
-                    class="sidebar-item-agrupation-ctm w-full flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150 hover:bg-slate-700"
+                    class="sidebar-item-agrupation-ctm w-full flex items-center justify-between gap-3 rounded-md px-3 py-2.5 text-sm text-xs font-medium transition-colors duration-150 hover:bg-slate-700"
                     [ngClass]="{
                         'bg-slate-700': flyoutGroup?.id === group.id,
-                        'bg-indigo-600 text-white': flyoutGroup?.id !== group.id && activeGroupByUrl === group
+                        'btn-subitems-group-parent-active':
+                            flyoutGroup?.id !== group.id && activeGroupByUrl === group,
                     }"
                 >
                     <div class="flex items-center gap-3">
@@ -51,10 +53,21 @@
                     }
                 </button>
 
-                <!-- ACORDEÓN: Se muestra solo en móvil si el grupo está activo -->
-                @if (!isDesktop && flyoutGroup?.id === group.id) {
+                <!-- ACORDEÓN: Recursivo solo en móvil y solo para el grupo activo -->
+                <!--@if (!isDesktop && flyoutGroup?.id === group.id) {
                     <div class="pl-6 pt-2 space-y-1 border-l border-slate-600 ml-4">
-                        @for (link of group.links; track link.routerLink) {
+                        <ng-container
+                            *ngTemplateOutlet="
+                                recursiveLinks;
+                                context: { $implicit: group.links, parentKey: group.id }
+                            "
+                        ></ng-container>
+                    </div>
+                }
+
+                <ng-template #recursiveLinks let-links let-parentKey="parentKey">
+                    @for (link of links; track link.label) {
+                        <ng-container *ngIf="!link.links">
                             <a
                                 [routerLink]="link.routerLink"
                                 routerLinkActive="text-indigo-400 font-semibold"
@@ -62,17 +75,168 @@
                                 class="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors duration-150 text-slate-300 hover:text-white"
                                 (click)="onLinkClick()"
                             >
-                                <span class="material-symbols-outlined text-lg">{{ link.icon }}</span>
+                                <span class="material-symbols-outlined text-lg">{{
+                                    link.icon
+                                }}</span>
                                 <span class="truncate">{{ link.label }}</span>
+                                @if (link.isNew) {
+                                    <span
+                                        class="ml-2 px-2 py-0.5 rounded-full bg-indigo-500 text-xs font-semibold"
+                                        >Nuevo</span
+                                    >
+                                }
                             </a>
-                        }
+                        </ng-container>
+                        <ng-container *ngIf="link.links">
+                            <button
+                                class="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-colors duration-150 hover:bg-slate-700"
+                                (click)="toggleSubAccordion(getAccordionKey(parentKey, link))"
+                                [attr.aria-expanded]="
+                                    isSubAccordionOpen(getAccordionKey(parentKey, link))
+                                "
+                            >
+                                <span class="material-symbols-outlined text-lg">{{
+                                    link.icon
+                                }}</span>
+                                <span class="sub-item-group-ctm truncate flex-1">{{ link.label }}</span>
+                                <span class="material-symbols-outlined">
+                                    {{
+                                        isSubAccordionOpen(getAccordionKey(parentKey, link))
+                                            ? 'expand_less'
+                                            : 'expand_more'
+                                    }}
+                                </span>
+                                @if (link.isNew) {
+                                    <span
+                                        class="ml-2 px-2 py-0.5 rounded-full bg-indigo-500 text-xs font-semibold"
+                                        >Nuevo</span
+                                    >
+                                }
+                            </button>
+                            <div
+                                *ngIf="isSubAccordionOpen(getAccordionKey(parentKey, link))"
+                                class="pl-6 border-l border-slate-700 ml-2"
+                            >
+                                <ng-container
+                                    *ngTemplateOutlet="
+                                        recursiveLinks;
+                                        context: {
+                                            $implicit: link.links,
+                                            parentKey: getAccordionKey(parentKey, link),
+                                        }
+                                    "
+                                ></ng-container>
+                            </div>
+                        </ng-container>
+                    }
+                </ng-template>-->
+
+                <!-- ACORDEÓN: Recursivo solo en móvil y solo para el grupo activo -->
+                @if (!isDesktop && flyoutGroup?.id === group.id) {
+                    <div class="pt-2 space-y-1 border-l border-slate-600 ml-4">
+                        <ng-container
+                            *ngTemplateOutlet="
+                                recursiveLinks;
+                                context: { $implicit: group.links, parentKey: group.id, level: 1 }
+                            "
+                        ></ng-container>
                     </div>
                 }
+
+                <ng-template #recursiveLinks let-links let-parentKey="parentKey" let-level="level">
+                    @for (link of links; track link.label) {
+                        <div class="relative mb-1">
+                            @if (!link.links) {
+                                <a
+                                    [routerLink]="link.routerLink"
+                                    routerLinkActive="bg-indigo-600 text-white"
+                                    [routerLinkActiveOptions]="{ exact: true }"
+                                    class="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm text-xs font-medium transition-colors duration-150 hover:bg-slate-700 whitespace-nowrap"
+                                    [ngClass]="{
+                                        'pl-6': level === 1,
+                                        'pl-10': level === 2,
+                                        'pl-14': level >= 3,
+                                        'bg-indigo-600 text-white': isActiveLink(link.routerLink),
+                                    }"
+                                    (click)="onLinkClick()"
+                                >
+                                    <span
+                                        *ngIf="link.icon"
+                                        class="material-symbols-outlined text-sm text-xs"
+                                        >{{ link.icon }}</span
+                                    >
+                                    <span class="truncate">{{ link.label }}</span>
+                                    @if (link.isNew) {
+                                        <span
+                                            class="ml-2 px-2 py-0.5 rounded-full bg-indigo-500 text-xs font-semibold"
+                                            >Nuevo</span
+                                        >
+                                    }
+                                </a>
+                            }
+                            @if (link.links) {
+                                <button
+                                    type="button"
+                                    (click)="toggleSubAccordion(getAccordionKey(parentKey, link))"
+                                    class="btn-subitem-group-inner flex items-center gap-3 px-3 py-2 text-sm text-xs font-medium w-full text-left transition-colors duration-150 whitespace-nowrap rounded-md"
+                                    [ngClass]="{
+                                        'pl-6': level === 1,
+                                        'pl-10': level === 2,
+                                        'pl-14': level >= 3,
+                                        'btn-subitems-group-parent-inactive': !hasActiveDescendant(
+                                            link.links
+                                        ),
+                                        'btn-subitems-group-parent-active subitem-group-inner':
+                                            hasActiveDescendant(link.links),
+                                    }"
+                                >
+                                    <span
+                                        *ngIf="link.icon"
+                                        class="material-symbols-outlined text-lg"
+                                        >{{ link.icon }}</span
+                                    >
+                                    <span class="truncate flex-1">{{ link.label }}</span>
+                                    <span
+                                        class="btn-sub-item-group-to-next material-symbols-outlined text-base transition-transform duration-200"
+                                        [ngClass]="{
+                                            'rotate-90': isSubAccordionOpen(
+                                                getAccordionKey(parentKey, link)
+                                            ),
+                                        }"
+                                        >chevron_right</span
+                                    >
+                                    @if (link.isNew) {
+                                        <span
+                                            class="ml-2 px-2 py-0.5 rounded-full bg-indigo-500 text-xs font-semibold"
+                                            >Nuevo</span
+                                        >
+                                    }
+                                </button>
+
+                                @if (isSubAccordionOpen(getAccordionKey(parentKey, link))) {
+                                    <div class="overflow-x-auto">
+                                        <ng-container
+                                            *ngTemplateOutlet="
+                                                recursiveLinks;
+                                                context: {
+                                                    $implicit: link.links,
+                                                    parentKey: getAccordionKey(parentKey, link),
+                                                    level: (level || 0) + 1,
+                                                }
+                                            "
+                                        ></ng-container>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                </ng-template>
             </div>
         }
     </nav>
     <!-- Sección inferior (Logout) -->
-    <div class="px-3 py-4 border-t border-slate-700/50">
+    <div class="px-3 pb-4 pt-4" style="border-top: 2px solid rgba(255, 255, 255, 0.12)">
+        <!--<div class="w-full h-[1.5px] bg-slate-700/20 rounded-full mb-4"></div> -->
         <button
             (click)="onLogoutClick()"
             title="Cerrar sesión"
