@@ -10,21 +10,37 @@
             </button>-->
             <button
                 type="button"
-                class="text-2xl text-slate-600 focus:outline-none cursor-pointer mx-right"
+                class="btn-burguer-ctm text-2xl text-white focus:outline-none cursor-pointer transition-all duration-200 rounded-2xl bg-white/5 hover:bg-white/20 shadow-lg hover:scale-110"
                 (click)="toggleSidebar()"
                 aria-label="Abrir/cerrar menú"
+                style="
+                    backdrop-filter: blur(4px);
+                    padding: 0.5rem 0.85rem;
+                    box-shadow: 0 4px 16px 0 rgba(30, 41, 59, 0.18);
+                    border: none;
+                "
             >
-                <span class="text-white">{{ sidebarOpen() ? '✕' : '☰' }}</span>
+                <span
+                    class="transition-all duration-200 select-none"
+                    [ngClass]="sidebarOpen() ? 'rotate-90' : ''"
+                    >{{ sidebarOpen() ? '✕' : '☰' }}</span
+                >
             </button>
             <div class="flex items-center pl-4">
-                <div
-                    class="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-600 text-white font-bold text-sm"
-                >
-                    T
-                </div>
+                <
                 <div class="font-semibold text-slate-800 text-base tracking-tight">
                     <span class="text-white pr-1">Tipster</span
-                    ><span class="text-slate-500">Bank</span>
+                    ><span
+                        class="text-slate-500"
+                        style="
+                            display: inline-block;
+                            padding: 3px 10px 3px 5px;
+                            background: linear-gradient(90deg, #544ee8 0%, #3b82f6 100%);
+                            border-radius: 8px;
+                            color: white;
+                        "
+                        >Bank</span
+                    >
                 </div>
             </div>
         </div>
@@ -71,7 +87,6 @@
                 (logoutClicked)="logout()"
                 (linkClicked)="onLinkClick()"
             ></app-sidebar-menu-ctm>
-
         </div>
 
         <!-- El flyout SÓLO se muestra en DESKTOP -->
@@ -104,6 +119,41 @@
                 <router-outlet></router-outlet>
             </div>
         </main>
+    </div>
+
+    <div class="min-h-screen flex flex-col bg-slate-50">
+        <!-- Menú inferior fijo (solo en móviles) -->
+        <nav
+            class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center bg-slate-800 shadow-lg border-t border-slate-700 sm:hidden"
+            style="height: 3.5rem"
+        >
+            <!-- Opción 1: Inicio -->
+            <button
+                class="flex flex-col items-center justify-center text-slate-300 hover:text-indigo-400 transition"
+                aria-label="Inicio"
+            >
+                <span class="material-symbols-outlined text-xl">home</span>
+                <span class="text-[0.7rem] font-medium">Inicio</span>
+            </button>
+
+            <!-- Opción 2: Créditos -->
+            <button
+                class="flex flex-col items-center justify-center text-slate-300 hover:text-indigo-400 transition"
+                aria-label="Créditos"
+            >
+                <span class="material-symbols-outlined text-xl">credit_card</span>
+                <span class="text-[0.7rem] font-medium">Créditos</span>
+            </button>
+
+            <!-- Opción 3: Perfil -->
+            <button
+                class="flex flex-col items-center justify-center text-slate-300 hover:text-indigo-400 transition"
+                aria-label="Perfil"
+            >
+                <span class="material-symbols-outlined text-xl">person</span>
+                <span class="text-[0.7rem] font-medium">Perfil</span>
+            </button>
+        </nav>
     </div>
 
     <footer

@@ -176,6 +176,17 @@ export class DashboardShell {
             confirmHover: 'darken', // o 'lighten' o 'none'
         });
 
+
+        const ok = await this.confirm.confirmTyped({
+            title: 'Cerrar cuenta',
+            message: 'Cerrar la cuenta eliminará el acceso a productos asociados.',
+            details: ['Se cancelarán débitos automáticos', 'No se puede deshacer'],
+            match: 'CERRAR',
+            confirmText: 'Cerrar definitivamente',
+        });
+
+
+
         if (!confirmlogout) {
             return;
         }

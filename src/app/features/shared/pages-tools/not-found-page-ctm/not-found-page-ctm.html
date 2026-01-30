@@ -1,0 +1,176 @@
+<!-- Cambios realizados según solicitud -->
+
+<div class="min-h-screen w-full bg-slate-950 relative overflow-hidden">
+    <!-- Fondo tipo “video / login” (sin video real, pero con look dinámico) -->
+    <div class="absolute inset-0">
+        <!-- Glow + gradientes animables -->
+        <div
+            class="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl opacity-70 bg-gradient-to-br from-blue-500/35 via-indigo-500/25 to-fuchsia-500/20"
+        ></div>
+        <div
+            class="absolute -bottom-56 -right-40 h-[620px] w-[620px] rounded-full blur-3xl opacity-60 bg-gradient-to-tr from-indigo-500/30 via-sky-500/25 to-blue-600/25"
+        ></div>
+
+        <!-- “Grano” + grid sutil para profundidad -->
+        <div
+            class="absolute inset-0 opacity-[0.08]"
+            style="
+                background-image: radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0);
+                background-size: 24px 24px;
+            "
+        ></div>
+
+        <!-- Vignette -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/55 to-black/70"></div>
+    </div>
+
+    <!-- Contorno / marco azul de la app -->
+    <div class="relative mx-auto min-h-screen max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+        <div
+            class="hidden md:block absolute inset-x-4 top-8 bottom-8 sm:inset-x-6 lg:inset-x-8 rounded-[28px] sm:ring-1 ring-blue-500/25 bg-gradient-to-b from-white/5 via-white/3 to-transparent shadow-[0_0_0_1px_rgba(59,130,246,0.08),0_30px_80px_rgba(0,0,0,0.45)]"
+        ></div>
+
+        <!-- Layout -->
+        <div class="relative flex min-h-[calc(100vh-5rem)] items-center justify-center">
+            <div class="w-full max-w-2xl">
+                <!-- Header / “Logo” tipográfico -->
+                <div class="flex items-center justify-center gap-3">
+                    <div class="text-center">
+                        <div class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                            <span
+                                class="bg-gradient-to-r from-sky-200 via-blue-200 to-indigo-200 bg-clip-text text-transparent"
+                            >
+                                Tipster </span
+                            ><span
+                                class="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent"
+                            >
+                                Bank
+                            </span>
+                        </div>
+                        <p class="mt-1 text-xs sm:text-sm text-white/60">
+                            Seguridad • Control • Confianza
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card principal -->
+                <div
+                    class="mt-8 rounded-[26px] bg-white/5 ring-1 ring-white/10 backdrop-blur-xl shadow-[0_20px_70px_rgba(0,0,0,0.55)] overflow-hidden"
+                >
+                    <!-- Banda superior con azul degradado -->
+                    <div
+                        class="px-4 sm:px-6 md:px-8 py-5 bg-gradient-to-r from-blue-600/25 via-indigo-600/20 to-sky-600/20 border-b border-white/10"
+                    >
+                        <div class="flex flex-wrap items-start gap-4">
+                            <!-- Badge 404 -->
+                            <div class="flex-shrink-0">
+                                <div
+                                    class="inline-flex items-center rounded-2xl px-3 py-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700 ring-1 ring-red-400 shadow-md"
+                                >
+                                    <span
+                                        class="text-xs sm:text-sm font-semibold tracking-wider text-white"
+                                        >ERROR</span
+                                    >
+                                    <span class="mx-2 h-3 w-px bg-white/15"></span>
+                                    <span class="text-xs sm:text-sm font-extrabold text-white"
+                                        >404</span
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Texto principal -->
+                            <div class="min-w-0">
+                                <h1
+                                    class="not-found-title text-base sm:text-lg md:text-xl font-bold text-white leading-tight"
+                                >
+                                    Página no encontrada
+                                </h1>
+                                <p class="mt-1 text-xs sm:text-sm md:text-base text-white/65">
+                                    No pudimos ubicar este recurso. Puede que la URL esté mal
+                                    escrita o el contenido ya no exista.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenido -->
+                    <div class="px-6 sm:px-8 py-7 sm:py-8">
+                        <!-- Mensaje con “pill” degradado -->
+                        <div
+                            class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-sky-500/10 ring-1 ring-blue-400/15"
+                        >
+                            <p class="text-sm sm:text-[15px] leading-relaxed text-white/80">
+                                Si estabas intentando acceder a una operación bancaria, por
+                                seguridad te sugerimos regresar al inicio y continuar desde la
+                                navegación principal.
+                            </p>
+
+                            <!-- Chips / quick hints -->
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span
+                                    class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-white/5 ring-1 ring-white/10 text-white/70"
+                                >
+                                    ✔ Sesión protegida
+                                </span>
+                                <span
+                                    class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-white/5 ring-1 ring-white/10 text-white/70"
+                                >
+                                    ✔ Navegación segura
+                                </span>
+                                <span
+                                    class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-white/5 ring-1 ring-white/10 text-white/70"
+                                >
+                                    ✔ Estado consistente
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Botón principal -->
+                        <div
+                            class="mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4"
+                        >
+                            <button
+                                type="button"
+                                (click)="goHome()"
+                                class="group inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl px-5 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 hover:from-blue-500 hover:via-indigo-500 hover:to-sky-500 text-white font-semibold shadow-[0_18px_45px_rgba(59,130,246,0.25)] ring-1 ring-white/15 focus:outline-none focus:ring-2 focus:ring-blue-300/40 focus:ring-offset-2 focus:ring-offset-slate-950 transition"
+                            >
+                                <span class="text-sm">Volver al inicio</span>
+                                <span
+                                    class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/15 group-hover:bg-white/15 transition"
+                                >
+                                    <!-- Flecha (SVG inline) -->
+                                    <svg
+                                        class="h-4 w-4 text-white/90"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        aria-hidden="true"
+                                    >
+                                        <path
+                                            d="M10 17l5-5-5-5"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
+
+                        <!-- Footer mini -->
+                        <div class="mt-7 flex items-center justify-between text-xs text-white/45">
+                            <span>TipsterBank • Experiencia bancaria moderna</span>
+                            <span class="hidden sm:inline">Código: TB-404</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nota inferior -->
+                <p class="mt-6 text-center text-xs text-white/40">
+                    Si el problema persiste, verifica tu conexión o intenta ingresar desde el menú
+                    principal.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -200,15 +200,17 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @for (credit of creditsPage()!.content; track credit.id) {
-                            <tr class="hover:bg-slate-50/60">
+                            <tr class="hover:bg-slate-50/60 text-xs">
                                 <td class="px-4 py-2 text-slate-700">
-                                    {{ credit.createdAt | date: 'shortDate' }}
+                                    {{ credit.createdAt | date: 'dd MMM yyyy':'':'es' }}
                                 </td>
                                 <td class="px-4 py-2 text-slate-800">
                                     {{ credit.clientFullName ?? 'Cliente N/A' }}
                                 </td>
                                 <td class="px-4 py-2 text-slate-800">
-                                    {{ credit.amount | number: '1.0-0' }}
+                                    <span class="font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md inline-block">
+                                        $ {{ credit.amount | number: '1.0-0' }}
+                                    </span>
                                 </td>
                                 <td class="px-4 py-2 text-slate-700">
                                     {{ credit.creditProductName }}

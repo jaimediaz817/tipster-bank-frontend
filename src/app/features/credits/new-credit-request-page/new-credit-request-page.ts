@@ -128,7 +128,7 @@ export class NewCreditRequestPage implements OnInit {
 
                 // Opcional: navegar a mis solicitudes
                 setTimeout(() => {
-                    this.router.navigate(['/dashboard/client/credits']);
+                    this.router.navigate(['/dashboard/client/my-credits']);
                 }, 1000);
             },
             error: (err) => {

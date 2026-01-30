@@ -40,6 +40,18 @@ export class NavigationService {
                             routerLink: '/dashboard/client/my-credits/new/enterprise',
                             icon: 'business',
                         },
+                        {
+                            label: 'experimental -> 3',
+                            // routerLink: '/dashboard/client/my-credits/new/enterprise',
+                            icon: 'business',
+                            links: [
+                                {
+                                    label: 'sub sub sub itm',
+                                    routerLink: '/dashboard/client/my-credits/new/experimental',
+                                    icon: 'business',
+                                },                                
+                            ]
+                        },                        
                     ],
                 },
             ],

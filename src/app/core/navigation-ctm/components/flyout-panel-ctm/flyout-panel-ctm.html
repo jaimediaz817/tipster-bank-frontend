@@ -5,21 +5,36 @@
     <!-- Encabezado del panel -->
     <div class="panel-header">
         @if (panelStack.length > 1) {
-            <button
-                (click)="goBack()"
-                class="icon-btn flyout-back-btn"
-                aria-label="Volver"
-            >
+            <button (click)="goBack()" class="icon-btn flyout-back-btn" aria-label="Volver">
                 <span class="material-symbols-outlined" style="color: #fff">arrow_back</span>
             </button>
         }
-        <h2 class="panel-title">{{ panelStack[panelStack.length - 1].title }}</h2>
-        <button 
+        <!-- TODO: TEST  -->
+        <div class="panel-breadcrumb flex items-center gap-1 text-xs text-slate-500 font-medium">
+            @for (panel of panelStack; let i = $index; track panel) {
+                <span
+                    [ngClass]="{
+                        'breadcrumb-current-item': i === panelStack.length - 1,
+                        truncate: i !== panelStack.length - 1,
+                    }"
+                >
+                    {{ panel.title }}
+                </span>
+                @if (i < panelStack.length - 1) {
+                    <span class="mx-0.5 text-slate-400">/</span>
+                }
+                @if (i === panelStack.length - 1) {
+                    <!-- Último elemento, no agregar separador -->
+                }
+            }
+        </div>
+        <!--<h2 class="panel-title">{{ panelStack[panelStack.length - 1].title }}</h2>-->
+        <button
             (click)="onClose()"
             class="btn-close-flyout-panel icon-btn"
             aria-label="Cerrar panel"
         >
-            <span class="material-symbols-outlined" style="transition: color 0.2s;">close</span>
+            <span class="material-symbols-outlined" style="transition: color 0.2s">close</span>
         </button>
     </div>
 
@@ -36,7 +51,9 @@
                     (click)="onClose()"
                 >
                     <div class="link-header">
-                        <span class="link-item-icon-container material-symbols-outlined icon">{{ link.icon }}</span>
+                        <span class="link-item-icon-container material-symbols-outlined icon">{{
+                            link.icon
+                        }}</span>
                         @if (link.isNew) {
                             <span class="new-badge">Nuevo</span>
                         }
@@ -55,14 +72,18 @@
                     type="button"
                 >
                     <div class="link-header">
-                        <span class="link-item-icon-container material-symbols-outlined icon">{{ link.icon }}</span>
+                        <span class="link-item-icon-container material-symbols-outlined icon">{{
+                            link.icon
+                        }}</span>
                         @if (link.isNew) {
                             <span class="new-badge">Nuevo</span>
                         }
                     </div>
                     <div class="link-body flex justify-between items-center w-full">
                         <span class="link-title">{{ link.label }}</span>
-                        <span class="btn-goto-next-flyout material-symbols-outlined ml-2">chevron_right</span>
+                        <span class="btn-goto-next-flyout material-symbols-outlined ml-2"
+                            >chevron_right</span
+                        >
                     </div>
                 </button>
             }
