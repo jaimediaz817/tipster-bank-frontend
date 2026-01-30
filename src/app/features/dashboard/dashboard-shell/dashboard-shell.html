@@ -27,7 +27,6 @@
                 >
             </button>
             <div class="flex items-center pl-4">
-                <
                 <div class="font-semibold text-slate-800 text-base tracking-tight">
                     <span class="text-white pr-1">Tipster</span
                     ><span
@@ -72,10 +71,25 @@
             id="app-sidebar-wrapper"
             class="fixed top-18 bottom-0 left-0 z-40 bg-gradient-to-b from-[#212529] to-[#334155] shadow-xl transition-transform duration-500 ease-in-out will-change-transform md:block backdrop-blur-sm"
             [ngClass]="{
-                'translate-x-0': sidebarOpen() || isDesktop(),
-                '-translate-x-full': !sidebarOpen() && !isDesktop(),
+                'translate-x-0': ( sidebarOpen() ),
+                '-translate-x-full': (!sidebarOpen() && !isDesktop()) || !sidebarShortVisible(),
             }"
         >
+            <!-- Flecha indicativa para cerrar completamente -->
+            <button
+                *ngIf="!sidebarOpen() && isDesktop()"
+                class="btnSidebarShortAction absolute top-4 right-[-12px] flex items-center justify-center w-6 h-6 bg-slate-700 text-white shadow-md hover:bg-slate-600 transition"
+                (click)="toggleSidebarShort()"
+                [ngClass]="{
+                    'btnSidebarShortAction-show': sidebarShortVisible(),
+                    'btnSidebarShortAction-hide': !sidebarShortVisible()
+                }"
+                aria-label="Cerrar barra lateral"
+            >
+                <span 
+                    class="material-symbols-outlined text-sm transition-transform duration-300"                
+                >{{ !sidebarShortVisible() ? 'chevron_right' : 'menu_open' }}</span>
+            </button>
             <app-sidebar-menu-ctm
                 [isDesktop]="isDesktop()"
                 [sidebarOpen]="sidebarOpen()"
@@ -104,7 +118,7 @@
         <main
             class="w-full h-full overflow-y-auto py-6 transition-all duration-300 ease-in-out"
             [ngStyle]="{
-                'padding-left': isDesktop() ? (sidebarOpen() ? '18rem' : '2.5rem') : '0',
+                'padding-left': !sidebarShortVisible() ? '0' : (isDesktop() ? (sidebarOpen() ? '18rem' : '2.5rem') : '0'),
                 'padding-top': '1rem',
             }"
         >
@@ -121,7 +135,8 @@
         </main>
     </div>
 
-    <div class="min-h-screen flex flex-col bg-slate-50">
+    <!-- TODO: Footer fijo en la parte inferior -->
+    <div class="min-h-screen flex flex-col bg-slate-50 sm:hidden">
         <!-- Menú inferior fijo (solo en móviles) -->
         <nav
             class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center bg-slate-800 shadow-lg border-t border-slate-700 sm:hidden"

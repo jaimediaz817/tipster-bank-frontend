@@ -20,10 +20,18 @@ import { ConfirmDialogService } from '../../shared/dialog-tools/confirm-dialog-c
     styleUrls: ['./dashboard-shell.css'],
 })
 export class DashboardShell {
+    today = new Date();
+
+    // --------------------------------------------------------------------------
+    // --- INYECCIONES DE SERVICIOS ---------------------------------------------
+    // --------------------------------------------------------------------------
     private readonly authStore = inject(AuthStore);
     private readonly router = inject(Router);
     private readonly navigationService = inject(NavigationService);
 
+    // --------------------------------------------------------------------------
+    // --- SIGNALS REACTIVOS PARA EL SIDEBAR, FLYOUT Y TAMAÑO PANTALLA -----------
+    // --------------------------------------------------------------------------
     sidebarOpen = signal(true);
     // Signal reactivo para saber si es desktop (md: 768px+)
     isDesktop = signal(window.matchMedia('(min-width: 768px)').matches);
@@ -31,9 +39,10 @@ export class DashboardShell {
     flyoutGroup = signal<NavGroup | null>(null);
     // NOTE: Nuevo signal para controlar el menú de usuario
     isUserMenuOpen = signal(false);
+    sidebarShortVisible = signal(true);
 
-    today = new Date();
-
+    // --------------------------------------------------------------------------
+    // --- COMPUTED SIGNALS PARA EL USUARIO Y ROLES ------------------------------
     readonly user = computed(() => this.authStore.currentUser());
     readonly roles = computed<string[]>(() => this.user()?.roles ?? []);
     readonly isClient = computed(() => this.roles().includes(UserRole.CLIENTE));
@@ -45,11 +54,16 @@ export class DashboardShell {
     // --- AHORA CONSUMIMOS EL SERVICIO ---
     readonly groups = this.navigationService.navGroups;
 
+    // --------------------------------------------------------------------------
+    // --- OPCIONES DEL MENÚ DE USUARIO ------------------------------------------
     userMenuOptions = [
         { label: 'Mi perfil', icon: 'person', routerLink: '/dashboard/profile' },
         { label: 'Configuración', icon: 'settings', routerLink: '/dashboard/settings' },
     ];
 
+    // --------------------------------------------------------------------------
+    // --- CONSTRUCTOR Y MÉTODOS ------------------------------------------------
+    // --------------------------------------------------------------------------
     constructor(private readonly confirm: ConfirmDialogService) {
         this.currentUrl.set(this.router.url);
 
@@ -84,44 +98,17 @@ export class DashboardShell {
         this.flyoutGroup.set(null);
     }
 
-    // NOTE TOGGLES: ------------------------------
-    // --- NUEVO MÉTODO PARA TOGGLE DEL MENÚ DE USUARIO ---
-    // toggleUserMenu() {
-    //     this.isUserMenuOpen.update((open) => !open);
-    // }
-
-    // --- NUEVO MÉTODO PARA CERRAR EL MENÚ AL HACER CLIC FUERA ---
-    // @HostListener('document:click', ['$event'])
-    // onDocumentClick(event: MouseEvent) {
-    //     const target = event.target as HTMLElement;
-    //     if (this.isUserMenuOpen() && !target.closest('.user-menu-container')) {
-    //         this.isUserMenuOpen.set(false);
-    //     }
-    // }
-
-    // TODO: más adelante-  Opcional: navegación a perfil
-    // onProfile() {
-    //     this.router.navigate(['/dashboard/profile']); // placeholder
-    // }
-
-    // TODO: más adelante - menú de usuario en el HTML
-    // <div class="py-1">
-    //     <button
-    //         class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100 transition-colors"
-    //         (click)="onProfile(); isUserMenuOpen.set(false)"
-    //     >
-    //         <span class="material-icons text-base">account_circle</span>
-    //         <span>Mi perfil</span>
-    //     </button>
-    //     <!-- espacio para más opciones -->
-    // </div>
-
     // --- MÉTODO TOGGLE PARA EL SIDEBAR ---
     toggleSidebar() {
         this.sidebarOpen.set(!this.sidebarOpen());
         // Si el usuario cierra el sidebar, también cerramos el flyout/acordeón
         if (!this.sidebarOpen()) {
+            console.log('Cerrando sidebar, cerrando flyout');
             this.flyoutGroup.set(null);
+            // this.sidebarShortVisible.set(true); // Al cerrar, siempre volvemos a recortado
+        } else {
+            console.log('Abriendo sidebar');
+            this.sidebarShortVisible.set(true); // Al abrir, siempre mostramos completo
         }
     }
 
@@ -176,7 +163,6 @@ export class DashboardShell {
             confirmHover: 'darken', // o 'lighten' o 'none'
         });
 
-
         const ok = await this.confirm.confirmTyped({
             title: 'Cerrar cuenta',
             message: 'Cerrar la cuenta eliminará el acceso a productos asociados.',
@@ -185,13 +171,26 @@ export class DashboardShell {
             confirmText: 'Cerrar definitivamente',
         });
 
-
-
         if (!confirmlogout) {
             return;
         }
 
         this.authStore.logout();
         this.router.navigate(['/auth/login']);
+    }
+
+    toggleSidebarShort() {
+        console.log('Cerrando sidebar completamente');
+        console.log('estado: sidebarOpen ', this.sidebarOpen());
+        console.log('estado: sidebarShortVisible ', this.sidebarShortVisible());
+        console.log('estado: isDesktop ', this.isDesktop());
+
+        if (this.sidebarShortVisible()) {
+            // Sidebar recortado visible → ocultar completamente
+            this.sidebarShortVisible.set(false);
+        } else {
+            // Sidebar oculto → mostrar recortado
+            this.sidebarShortVisible.set(true);
+        }        
     }
 }

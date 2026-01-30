@@ -1,5 +1,5 @@
 .sidebar-item-agrupation-ctm .item-agrupation-active-ctm {
-    background: linear-gradient(90deg, #787af1 0%, #4f46e5 100%); /* linear-gradient(90deg, #6366f1 0%, #818cf8 100%); */ 
+    background: linear-gradient(90deg, #787af1 0%, #5d55e7 100%); /* linear-gradient(90deg, #6366f1 0%, #818cf8 100%); */ 
     
     color: #fff !important;
     box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.08);
@@ -10,10 +10,16 @@
 }
 
 .btn-subitems-group-parent-active {
-    border: 2px solid #6366f1;
+    /* border: 2px solid #6366f1; */
+    background: linear-gradient(90deg, #544ee8 0%, #3b82f6 100%);
+    color: #fff !important;
+
 }
 .btn-subitems-group-parent-active.subitem-group-inner {
     
+}
+.bg-gradient-indigo {
+    background: linear-gradient(90deg, #544ee8 0%, #3b82f6 100%);
 }
 
 /*

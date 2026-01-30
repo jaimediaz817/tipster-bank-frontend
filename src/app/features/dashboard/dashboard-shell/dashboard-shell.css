@@ -6,6 +6,77 @@
     justify-content: center;
     border-radius: 12px;
     position: relative;
+    font-weight: 200;
+    transition: all 0.8s ease;
+}
+
+.btnSidebarShortAction {
+    top: 7px;
+    right: 13px;
+    border-radius: 8px;
+}
+
+.btnSidebarShortAction span {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: inherit;
+transition: all 0.8s ease;
+}
+
+.btnSidebarShortAction.btnSidebarShortAction-hide {
+    left: 71px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+
+    background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
+    color: #dfdfdf;
+    border: 1.5px dashed #bfc9d1;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    opacity: 0.85;
+    cursor: pointer;
+    transition: all 0.55s cubic-bezier(0.4, 0, 0.2, 1), background 0.55s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s, box-shadow 0.2s, opacity 0.2s, border-color 0.2s, width 0.2s;
+
+    animation: pulse-right 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pulse-right {
+    0% {
+        width: 24px;
+        transform: translateX(0);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    50% {
+        width: 28px;
+        /* width: 36px;  */
+
+        /* transform: translateX(4px) scale(1.02); */
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.13);
+    }
+
+    100% {
+        width: 24px;
+        transform: translateX(0);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+}
+
+/* .btnSidebarShortAction.btnSidebarShortAction-hide {
+    animation: pulse-right 1.2s infinite cubic-bezier(0.4,0,0.2,1);
+} */
+
+.btnSidebarShortAction.btnSidebarShortAction-hide:hover {
+    background: linear-gradient(90deg, #e0e7ef 60%, #b6c3d1 100%);
+    color: #183153;
+    border-color: #3b4a5a;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+    opacity: 1;
+    animation: none;
+    width: 28px;
+    transition: color 0.95s ease, border-color 0.95s ease, box-shadow 0.95s ease, opacity 0.95s ease, width 0.95s ease, background 0.5s ease;
 }
 
 @media (min-width: 740px) {

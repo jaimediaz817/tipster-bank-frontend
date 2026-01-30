@@ -40,7 +40,12 @@ export class SidebarMenuCtm {
 
     isActiveLink(routerLink?: string): boolean {
         if (!routerLink) return false;
-        return this.router.isActive(routerLink, { paths: 'exact', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' });
+        return this.router.isActive(routerLink, {
+            paths: 'exact',
+            queryParams: 'ignored',
+            fragment: 'ignored',
+            matrixParams: 'ignored',
+        });
     }
 
     hasActiveDescendant(links: NavLink[]): boolean {
@@ -49,7 +54,7 @@ export class SidebarMenuCtm {
             if (link.links && this.hasActiveDescendant(link.links)) return true;
         }
         return false;
-    }    
+    }
 
     onGroupClick(group: NavGroup, event: MouseEvent): void {
         event.stopPropagation();
@@ -66,4 +71,5 @@ export class SidebarMenuCtm {
     onLinkClick(): void {
         this.linkClicked.emit();
     }
+
 }
