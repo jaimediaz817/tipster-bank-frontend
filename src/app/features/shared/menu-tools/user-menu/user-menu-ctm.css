@@ -14,6 +14,16 @@
     background: linear-gradient(90deg, #544ee8 0%, #3b82f6 100%);
 }
 
+@media (max-width: 600px) {
+    .user-menu-avatar-ctm {
+        width: 26px !important;
+        height: 26px !important;
+        min-width: 26px !important;
+        min-height: 26px !important;
+        font-size: 0.75rem !important;
+    }
+}
+
 /* Links minimalistas */
 .dropdown-link {
     display: flex;

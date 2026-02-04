@@ -1,0 +1,19 @@
+/* Flechas  */
+.arrow-icon-item-group-ctm {
+    font-weight: 100;
+    font-size: 1.5rem;
+}
+
+.sidebar-flyout .arrow-icon-item-group-ctm {
+    font-size: 1.35rem;
+}
+
+
+@media (min-width: 768px) {
+    .arrow-icon-item-group-ctm {
+        font-size: 1.85rem;
+    }
+    .sidebar-flyout .arrow-icon-item-group-ctm {
+        font-size: 1.55rem;
+    }    
+}

@@ -17,6 +17,7 @@ export class SidebarMenuCtm {
     @Input({ required: true }) homeLinkSegments: string[] = [];
     @Input({ required: true }) flyoutGroup: NavGroup | null = null;
     @Input({ required: true }) activeGroupByUrl: NavGroup | null = null;
+    @Input({ required: true }) mobileNavHeight!: number;
 
     @Output() groupClicked = new EventEmitter<{ group: NavGroup; event: MouseEvent }>();
     @Output() logoutClicked = new EventEmitter<void>();

@@ -16,12 +16,17 @@ export class FlyoutPanelCtm {
 
     @Output() close = new EventEmitter<void>();
     // Stack de paneles: cada nivel es { title, links }
-    panelStack: { title: string; links: NavLink[] }[] = [];  
+    panelStack: { title: string; links: NavLink[] }[] = [];
     private router = inject(Router);
 
     isActiveLink(routerLink?: string): boolean {
         if (!routerLink) return false;
-        return this.router.isActive(routerLink, { paths: 'exact', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored' });
+        return this.router.isActive(routerLink, {
+            paths: 'exact',
+            queryParams: 'ignored',
+            fragment: 'ignored',
+            matrixParams: 'ignored',
+        });
     }
 
     hasActiveDescendant(links: NavLink[]): boolean {
@@ -30,7 +35,7 @@ export class FlyoutPanelCtm {
             if (link.links && this.hasActiveDescendant(link.links)) return true;
         }
         return false;
-    }      
+    }
 
     ngOnInit() {
         // Inicializa el stack con el grupo raíz
@@ -38,9 +43,9 @@ export class FlyoutPanelCtm {
     }
 
     openPanel(link: NavLink) {
-        if (link.links) {
-            this.panelStack.push({ title: link.label, links: link.links });
-        }
+    if (link.links) {
+        this.panelStack.push({ title: link.label, links: link.links });
+    }
     }
 
     goBack() {

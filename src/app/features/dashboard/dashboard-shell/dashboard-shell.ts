@@ -1,4 +1,13 @@
-import { Component, computed, effect, HostListener, inject, signal } from '@angular/core';
+import {
+    Component,
+    computed,
+    effect,
+    ElementRef,
+    HostListener,
+    inject,
+    signal,
+    ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthStore } from '../../../core/state/auth.store';
@@ -11,6 +20,7 @@ import { SidebarMenuCtm } from '../../../core/navigation-ctm/components/sidebar-
 import { FlyoutPanelCtm } from '../../../core/navigation-ctm/components/flyout-panel-ctm/flyout-panel-ctm';
 import { UserMenuCtm } from '../../shared/menu-tools/user-menu/user-menu-ctm';
 import { ConfirmDialogService } from '../../shared/dialog-tools/confirm-dialog-ctm/confirm-dialog.service';
+import { driver } from 'driver.js';
 
 @Component({
     selector: 'app-dashboard-shell',
@@ -22,6 +32,11 @@ import { ConfirmDialogService } from '../../shared/dialog-tools/confirm-dialog-c
 export class DashboardShell {
     today = new Date();
 
+    // NOTE: Referencia al nav móvil para cerrar al navegar
+    @ViewChild('mobileBottomNav') mobileNavRef!: ElementRef<HTMLElement>;
+    mobileNavHeight = signal(0);
+    private resizeObserver?: ResizeObserver;
+
     // --------------------------------------------------------------------------
     // --- INYECCIONES DE SERVICIOS ---------------------------------------------
     // --------------------------------------------------------------------------
@@ -30,7 +45,7 @@ export class DashboardShell {
     private readonly navigationService = inject(NavigationService);
 
     // --------------------------------------------------------------------------
-    // --- SIGNALS REACTIVOS PARA EL SIDEBAR, FLYOUT Y TAMAÑO PANTALLA -----------
+    // --- SIGNALS REACTIVOS PARA EL SIDEBAR, FLYOUT Y TAMAÑO PANTALLA ----------
     // --------------------------------------------------------------------------
     sidebarOpen = signal(true);
     // Signal reactivo para saber si es desktop (md: 768px+)
@@ -42,7 +57,8 @@ export class DashboardShell {
     sidebarShortVisible = signal(true);
 
     // --------------------------------------------------------------------------
-    // --- COMPUTED SIGNALS PARA EL USUARIO Y ROLES ------------------------------
+    // --- COMPUTED SIGNALS PARA EL USUARIO Y ROLES -----------------------------
+    // --------------------------------------------------------------------------
     readonly user = computed(() => this.authStore.currentUser());
     readonly roles = computed<string[]>(() => this.user()?.roles ?? []);
     readonly isClient = computed(() => this.roles().includes(UserRole.CLIENTE));
@@ -55,11 +71,50 @@ export class DashboardShell {
     readonly groups = this.navigationService.navGroups;
 
     // --------------------------------------------------------------------------
-    // --- OPCIONES DEL MENÚ DE USUARIO ------------------------------------------
+    // --- OPCIONES DEL MENÚ DE USUARIO -----------------------------------------
+    // --------------------------------------------------------------------------
     userMenuOptions = [
         { label: 'Mi perfil', icon: 'person', routerLink: '/dashboard/profile' },
         { label: 'Configuración', icon: 'settings', routerLink: '/dashboard/settings' },
     ];
+
+    ngAfterViewInit() {
+        this.setNavHeight();
+        // Observa cambios de tamaño en el nav
+        if (this.mobileNavRef?.nativeElement) {
+            this.resizeObserver = new ResizeObserver(() => this.setNavHeight());
+            this.resizeObserver.observe(this.mobileNavRef.nativeElement);
+        }
+
+        // NOTE: TOUR
+        // Inicializar Driver.js
+        const driverObj = driver({
+            showProgress: true,
+            steps: [
+                {
+                    element: '#tour-hide-sidebar',
+                    popover: { title: 'Búsqueda', description: 'Aquí puedes buscar...' },
+                },
+            ],
+        });
+
+        // Iniciar el tour F
+        // Iniciar el tour
+        driverObj.drive();
+    }
+
+    setNavHeight() {
+        const el = this.mobileNavRef?.nativeElement;
+        console.log('Ajustando altura del nav móvil >>> ', el);
+        // Solo si está visible en mobile
+        const isVisible = el && el.clientHeight !== null && window.innerWidth < 768;
+        console.log('isVisible ', el.clientHeight);
+        this.mobileNavHeight.set(isVisible ? el.offsetHeight : 0);
+    }
+
+    ngOnDestroy() {
+        this.resizeObserver?.disconnect();
+    }
 
     // --------------------------------------------------------------------------
     // --- CONSTRUCTOR Y MÉTODOS ------------------------------------------------
@@ -93,6 +148,11 @@ export class DashboardShell {
             this.flyoutGroup.set(null);
         });
     }
+
+    // Steps config for Joyride
+    startTour() {}
+
+    // --- MÉTODO PARA CERRAR EL FLYOUT ---
 
     closeFlyout() {
         this.flyoutGroup.set(null);
@@ -163,14 +223,6 @@ export class DashboardShell {
             confirmHover: 'darken', // o 'lighten' o 'none'
         });
 
-        const ok = await this.confirm.confirmTyped({
-            title: 'Cerrar cuenta',
-            message: 'Cerrar la cuenta eliminará el acceso a productos asociados.',
-            details: ['Se cancelarán débitos automáticos', 'No se puede deshacer'],
-            match: 'CERRAR',
-            confirmText: 'Cerrar definitivamente',
-        });
-
         if (!confirmlogout) {
             return;
         }
@@ -191,6 +243,6 @@ export class DashboardShell {
         } else {
             // Sidebar oculto → mostrar recortado
             this.sidebarShortVisible.set(true);
-        }        
+        }
     }
 }

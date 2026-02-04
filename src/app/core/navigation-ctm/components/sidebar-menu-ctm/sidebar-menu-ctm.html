@@ -7,22 +7,20 @@
     }"
     style="background: linear-gradient(180deg, #212529 0%, #334155 100%)"
 >
-
-
     <nav
         class="px-3 space-y-2 flex-1 overflow-y-auto transition-all duration-300 ease-in-out"
-        [style.marginTop]="sidebarOpen ? '0.75rem' : (isDesktop ? '2.5rem' : '0.75rem')"
+        [style.marginTop]="sidebarOpen ? '0.75rem' : isDesktop ? '2.5rem' : '0.75rem'"
     >
         <!-- BOTÓN INICIO -->
         <a
             [routerLink]="homeLinkSegments"
             routerLinkActive="bg-gradient-indigo text-white"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors duration-150 hover:bg-slate-700"
+            class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-xs font-medium transition-colors duration-150 hover:bg-slate-700"
             title="Inicio"
             (click)="onLinkClick()"
         >
-            <span class="material-symbols-outlined text-xl">home</span>
+            <span class="arrow-icon-item-group-ctm material-symbols-outlined">home</span>
             @if (sidebarOpen || !isDesktop) {
                 <span class="truncate">Inicio</span>
             }
@@ -42,7 +40,9 @@
                     }"
                 >
                     <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-xl">{{ group.icon }}</span>
+                        <span class="arrow-icon-item-group-ctm material-symbols-outlined">{{
+                            group.icon
+                        }}</span>
                         @if (sidebarOpen || !isDesktop) {
                             <span class="truncate">{{ group.label }}</span>
                         }
@@ -50,91 +50,13 @@
                     <!-- Flecha para acordeón (visible si hay texto) -->
                     @if ((sidebarOpen || !isDesktop) && group.links.length > 0) {
                         <span
-                            class="material-symbols-outlined text-base transition-transform"
+                            class="arrow-icon-item-group-ctm material-symbols-outlined text-base transition-transform"
                             [class.rotate-180]="flyoutGroup?.id === group.id"
                         >
                             expand_more
                         </span>
                     }
                 </button>
-
-                <!-- ACORDEÓN: Recursivo solo en móvil y solo para el grupo activo -->
-                <!--@if (!isDesktop && flyoutGroup?.id === group.id) {
-                    <div class="pl-6 pt-2 space-y-1 border-l border-slate-600 ml-4">
-                        <ng-container
-                            *ngTemplateOutlet="
-                                recursiveLinks;
-                                context: { $implicit: group.links, parentKey: group.id }
-                            "
-                        ></ng-container>
-                    </div>
-                }
-
-                <ng-template #recursiveLinks let-links let-parentKey="parentKey">
-                    @for (link of links; track link.label) {
-                        <ng-container *ngIf="!link.links">
-                            <a
-                                [routerLink]="link.routerLink"
-                                routerLinkActive="text-indigo-400 font-semibold"
-                                [routerLinkActiveOptions]="{ exact: true }"
-                                class="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors duration-150 text-slate-300 hover:text-white"
-                                (click)="onLinkClick()"
-                            >
-                                <span class="material-symbols-outlined text-lg">{{
-                                    link.icon
-                                }}</span>
-                                <span class="truncate">{{ link.label }}</span>
-                                @if (link.isNew) {
-                                    <span
-                                        class="ml-2 px-2 py-0.5 rounded-full bg-indigo-500 text-xs font-semibold"
-                                        >Nuevo</span
-                                    >
-                                }
-                            </a>
-                        </ng-container>
-                        <ng-container *ngIf="link.links">
-                            <button
-                                class="w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-colors duration-150 hover:bg-slate-700"
-                                (click)="toggleSubAccordion(getAccordionKey(parentKey, link))"
-                                [attr.aria-expanded]="
-                                    isSubAccordionOpen(getAccordionKey(parentKey, link))
-                                "
-                            >
-                                <span class="material-symbols-outlined text-lg">{{
-                                    link.icon
-                                }}</span>
-                                <span class="sub-item-group-ctm truncate flex-1">{{ link.label }}</span>
-                                <span class="material-symbols-outlined">
-                                    {{
-                                        isSubAccordionOpen(getAccordionKey(parentKey, link))
-                                            ? 'expand_less'
-                                            : 'expand_more'
-                                    }}
-                                </span>
-                                @if (link.isNew) {
-                                    <span
-                                        class="ml-2 px-2 py-0.5 rounded-full bg-indigo-500 text-xs font-semibold"
-                                        >Nuevo</span
-                                    >
-                                }
-                            </button>
-                            <div
-                                *ngIf="isSubAccordionOpen(getAccordionKey(parentKey, link))"
-                                class="pl-6 border-l border-slate-700 ml-2"
-                            >
-                                <ng-container
-                                    *ngTemplateOutlet="
-                                        recursiveLinks;
-                                        context: {
-                                            $implicit: link.links,
-                                            parentKey: getAccordionKey(parentKey, link),
-                                        }
-                                    "
-                                ></ng-container>
-                            </div>
-                        </ng-container>
-                    }
-                </ng-template>-->
 
                 <!-- ACORDEÓN: Recursivo solo en móvil y solo para el grupo activo -->
                 @if (!isDesktop && flyoutGroup?.id === group.id) {
@@ -167,7 +89,7 @@
                                 >
                                     <span
                                         *ngIf="link.icon"
-                                        class="material-symbols-outlined text-sm text-xs"
+                                        class="arrow-icon-item-group-ctm material-symbols-outlined"
                                         >{{ link.icon }}</span
                                     >
                                     <span class="truncate">{{ link.label }}</span>
@@ -197,12 +119,12 @@
                                 >
                                     <span
                                         *ngIf="link.icon"
-                                        class="material-symbols-outlined text-lg"
+                                        class="arrow-icon-item-group-ctm material-symbols-outlined"
                                         >{{ link.icon }}</span
                                     >
                                     <span class="truncate flex-1">{{ link.label }}</span>
                                     <span
-                                        class="btn-sub-item-group-to-next material-symbols-outlined text-base transition-transform duration-200"
+                                        class="btn-sub-item-group-to-next arrow-icon-item-group-ctm material-symbols-outlined text-base transition-transform duration-200"
                                         [ngClass]="{
                                             'rotate-90': isSubAccordionOpen(
                                                 getAccordionKey(parentKey, link)
@@ -240,14 +162,18 @@
         }
     </nav>
     <!-- Sección inferior (Logout) -->
-    <div class="px-3 pb-1 pt-1" style="border-top: 2px solid rgba(255, 255, 255, 0.12)">
+    <div
+        class="px-3 pb-1 pt-1"
+        style="border-top: 2px solid rgba(255, 255, 255, 0.12)"
+        [ngStyle]="!isDesktop ? { 'margin-bottom.px': mobileNavHeight } : {}"
+    >
         <!--<div class="w-full h-[1.5px] bg-slate-700/20 rounded-full mb-4"></div> -->
         <button
             (click)="onLogoutClick()"
             title="Cerrar sesión"
             class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-rose-400 hover:to-pink-500 hover:shadow-lg"
         >
-            <span class="material-symbols-outlined text-xl">logout</span>
+            <span class="arrow-icon-item-group-ctm material-symbols-outlined">logout</span>
             @if (sidebarOpen || !isDesktop) {
                 <span class="truncate">Cerrar sesión</span>
             }

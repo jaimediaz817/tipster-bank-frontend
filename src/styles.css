@@ -14,6 +14,11 @@
  /* Angular CDK Overlay styles */
 @import "@angular/cdk/overlay-prebuilt.css";
 
+/* Estilos globales para componentes compartidos personalizados */
+@import './global-style-components-ctm/shared-components-ctm.css';
+
+@import "driver.js/dist/driver.css";
+
 :root {
   /* --font-family-base: 'Inter', Arial, sans-serif; */
   --font-family-base: 'Montserrat', Arial, sans-serif;

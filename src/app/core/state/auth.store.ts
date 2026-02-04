@@ -4,8 +4,18 @@ import { CurrentUser, AuthResponse } from '../models/auth.models';
 const STORAGE_KEY = 'credit_platform_auth';
 
 interface AuthState {
-  token: string | null;
-  currentUser: CurrentUser | null;
+    token: string | null;
+    currentUser: CurrentUser | null;
+}
+
+interface AuthState {
+    token: string | null;
+    currentUser: CurrentUser | null;
+    recentlyRegisteredUser?: {
+        email: string;
+        firstName?: string;
+        lastName?: string;
+    } | null;
 }
 
 /**
@@ -26,82 +36,102 @@ Necesitamos reactividad inmediata (ej. mostrar/ocultar items del menú).
  */
 @Injectable({ providedIn: 'root' })
 export class AuthStore {
-  private readonly _state = signal<AuthState>({
-    token: null,
-    currentUser: null,
-  });
-
-  // Signals "derivadas"
-  readonly token = computed(() => this._state().token);
-  readonly currentUser = computed(() => this._state().currentUser);
-  readonly isAuthenticated = computed(() => !!this._state().token);
-
-  constructor() {
-    this.restoreFromStorage();
-  }
-
-  /**
-   * Llamar cuando el backend devuelve un AuthResponse exitoso (login).
-   */
-  setAuth(response: AuthResponse): void {
-    const currentUser: CurrentUser = {
-      id: response.userId,
-      email: response.email,
-      fullName: response.fullName,
-      roles: response.roles,
-      avatarUrl: '', // TODO: agregar al backend si es necesario
-    };
-
-    this._state.set({
-      token: response.accessToken,
-      currentUser,
+    private readonly _state = signal<AuthState>({
+        token: null,
+        currentUser: null,
     });
 
-    this.saveToStorage();
-  }
+    // Signals "derivadas"
+    readonly token = computed(() => this._state().token);
+    readonly currentUser = computed(() => this._state().currentUser);
+    readonly isAuthenticated = computed(() => !!this._state().token);
 
-  logout(): void {
-    this._state.set({
-      token: null,
-      currentUser: null,
-    });
-    localStorage.removeItem(STORAGE_KEY);
-  }
+    // Nuevo: signal para usuario recién registrado
+    readonly recentlyRegisteredUser = computed(() => this._state().recentlyRegisteredUser);
 
-  /**
-   * Comprueba si el usuario tiene al menos uno de los roles requeridos.
-   */
-  hasAnyRole(requiredRoles: string[]): boolean {
-    const user = this.currentUser();
-    if (!user) return false;
-
-    return requiredRoles.some((role) => user.roles.includes(role));
-  }
-
-  // ────────────────────────────────────────────────────────────────
-  // Persistencia en localStorage
-  // ────────────────────────────────────────────────────────────────
-
-  private saveToStorage(): void {
-    const state = this._state();
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        token: state.token,
-        currentUser: state.currentUser,
-      }),
-    );
-  }
-
-  private restoreFromStorage(): void {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-
-    try {
-      const parsed = JSON.parse(raw) as AuthState;
-      this._state.set(parsed);
-    } catch {
-      localStorage.removeItem(STORAGE_KEY);
+    constructor() {
+        this.restoreFromStorage();
     }
-  }
+
+    /**
+     * Llamar cuando el backend devuelve un AuthResponse exitoso (login).
+     */
+    setAuth(response: AuthResponse): void {
+        const currentUser: CurrentUser = {
+            id: response.userId,
+            email: response.email,
+            fullName: response.fullName,
+            roles: response.roles,
+            avatarUrl: '', // TODO: agregar al backend si es necesario
+        };
+
+        this._state.set({
+            token: response.accessToken,
+            currentUser,
+        });
+
+        this.saveToStorage();
+    }
+
+    logout(): void {
+        this._state.set({
+            token: null,
+            currentUser: null,
+        });
+        localStorage.removeItem(STORAGE_KEY);
+    }
+
+    /**
+     * Comprueba si el usuario tiene al menos uno de los roles requeridos.
+     */
+    hasAnyRole(requiredRoles: string[]): boolean {
+        const user = this.currentUser();
+        if (!user) return false;
+
+        return requiredRoles.some((role) => user.roles.includes(role));
+    }
+
+    // ────────────────────────────────────────────────────────────────
+    // Persistencia en localStorage
+    // ────────────────────────────────────────────────────────────────
+
+    private saveToStorage(): void {
+        const state = this._state();
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+                token: state.token,
+                currentUser: state.currentUser,
+            }),
+        );
+    }
+
+    private restoreFromStorage(): void {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+
+        try {
+            const parsed = JSON.parse(raw) as AuthState;
+            this._state.set(parsed);
+        } catch {
+            localStorage.removeItem(STORAGE_KEY);
+        }
+    }
+
+    // Método para guardar usuario recién registrado
+    // Método para guardar usuario recién registrado
+    setRecentlyRegisteredUser(user: { email: string; firstName?: string; lastName?: string }) {
+        this._state.set({
+            ...this._state(),
+            recentlyRegisteredUser: user,
+        });
+    }
+
+    // Método para limpiar usuario recién registrado
+    clearRecentlyRegisteredUser() {
+        this._state.set({
+            ...this._state(),
+            recentlyRegisteredUser: null,
+        });
+    }
 }

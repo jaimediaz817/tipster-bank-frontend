@@ -13,11 +13,20 @@
     /* border: 2px solid #6366f1; */
     background: linear-gradient(90deg, #544ee8 0%, #3b82f6 100%);
     color: #fff !important;
+}
 
+@media (max-width: 767px) {
+    .btn-subitems-group-parent-active {                
+        border-radius: 8px;
+        border: 1px solid #3b82f6;
+        background: transparent;
+        box-shadow: 0 2px 8px 0 rgba(59, 130, 246, 0.12);
+    }
 }
-.btn-subitems-group-parent-active.subitem-group-inner {
-    
-}
+
+
+/* TODO: PENDIENTE IMPLEMENTAR  */
+.btn-subitems-group-parent-active.subitem-group-inner {}
 .bg-gradient-indigo {
     background: linear-gradient(90deg, #544ee8 0%, #3b82f6 100%);
 }

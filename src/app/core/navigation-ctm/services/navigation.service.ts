@@ -111,6 +111,20 @@ export class NavigationService {
                 },
             ],
         },
+        {
+            id: 'client-tools',
+            label: 'Herramientas',
+            icon: 'construction',
+            roles: [UserRole.CLIENTE],
+            links: [
+                {
+                    label: 'Simulador de Crédito',
+                    routerLink: '/dashboard/tools/simulator',
+                    icon: 'calculate',
+                    isNew: true,
+                },
+            ],
+        },        
     ];
 
     // --- NUEVO: Computed signal que expone los grupos filtrados por rol ---
